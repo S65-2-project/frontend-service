@@ -25,3 +25,22 @@ jobs:
       - run: npm test
         env:
           CI: true
+
+  delivery:
+    needs: build
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+      - name: Docker login
+        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_ACCESS_TOKEN }}
+      - name: Build Docker image
+        run: docker build -t frontend-service .
+      - name: Tag Docker image
+        run: |
+          docker tag frontend-service ${{ secrets.DOCKER_USER }}/frontend-service:${{ github.sha }}
+          docker tag frontend-service ${{ secrets.DOCKER_USER }}/frontend-service:latest
+      - name: Push Docker image
+        run: |
+          docker push ${{ secrets.DOCKER_USER }}/frontend-service:${{ github.sha }}
+          docker push ${{ secrets.DOCKER_USER }}/frontend-service:latest
