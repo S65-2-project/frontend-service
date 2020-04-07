@@ -3,9 +3,7 @@
 
 name: Node.js CI
 
-on:
-  pull_request:
-    branches: [ develop ]
+on: [pull_request]
 
 jobs:
   build:
@@ -40,9 +38,9 @@ jobs:
         run: docker build -t ${{ secrets.REPOSITORY_NAME }} .
       - name: Tag Docker image
         run: |
-          docker tag ${{ secrets.REPOSITORY_NAME }} s652/${{ secrets.REPOSITORY_NAME }}:dev-${{ github.sha }}
-          docker tag ${{ secrets.REPOSITORY_NAME }} s652/${{ secrets.REPOSITORY_NAME }}:dev-latest
+          docker tag ${{ secrets.REPOSITORY_NAME }} s652/${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
+          docker tag ${{ secrets.REPOSITORY_NAME }} s652/${{ secrets.REPOSITORY_NAME }}:latest
       - name: Push Docker image
         run: |
-          docker push s652/${{ secrets.REPOSITORY_NAME }}:dev-${{ github.sha }}
-          docker push s652/${{ secrets.REPOSITORY_NAME }}:dev-latest
+          docker push s652/${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
+          docker push s652/${{ secrets.REPOSITORY_NAME }}:latest
