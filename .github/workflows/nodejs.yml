@@ -35,12 +35,12 @@ jobs:
       - name: Docker login
         run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_ACCESS_TOKEN }}
       - name: Build Docker image
-        run: docker build -t frontend-service .
+        run: docker build -t ${{ secrets.REPOSITORY_NAME }} .
       - name: Tag Docker image
         run: |
-          docker tag frontend-service s652/frontend-service:${{ github.sha }}
-          docker tag frontend-service s652/frontend-service:latest
+          docker tag ${{ secrets.REPOSITORY_NAME }} s652/${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
+          docker tag ${{ secrets.REPOSITORY_NAME }} s652/${{ secrets.REPOSITORY_NAME }}:latest
       - name: Push Docker image
         run: |
-          docker push s652/frontend-service:${{ github.sha }}
-          docker push s652/frontend-service:latest
+          docker push s652/${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
+          docker push s652/${{ secrets.REPOSITORY_NAME }}:latest
