@@ -1,7 +1,0 @@
-version: '3.3'
-services:
-  web:
-    image: "s652/frontend-service:latest"
-    ports:
-      - "10203:80"
-      - "10220:443"
