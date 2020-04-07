@@ -38,9 +38,9 @@ jobs:
         run: docker build -t frontend-service .
       - name: Tag Docker image
         run: |
-          docker tag frontend-service ${{ secrets.DOCKER_USER }}/frontend-service:${{ github.sha }}
-          docker tag frontend-service ${{ secrets.DOCKER_USER }}/frontend-service:latest
+          docker tag frontend-service s652/frontend-service:${{ github.sha }}
+          docker tag frontend-service s652/frontend-service:latest
       - name: Push Docker image
         run: |
-          docker push ${{ secrets.DOCKER_USER }}/frontend-service:${{ github.sha }}
-          docker push ${{ secrets.DOCKER_USER }}/frontend-service:latest
+          docker push s652/frontend-service:${{ github.sha }}
+          docker push s652/frontend-service:latest
