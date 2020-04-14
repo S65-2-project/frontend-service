@@ -1,8 +1,8 @@
 name: Node.js on push on develop
 
-on: [push]
-#  push:
-#    branches: [develop]
+on:
+  push:
+    branches: [develop]
 
 jobs:
   build:
