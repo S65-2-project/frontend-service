@@ -17,7 +17,6 @@ const Login = (props : any) => {
                 <h1>Login pagina</h1>
             </div>
         );
-
     return (
         <div>
             {content}
