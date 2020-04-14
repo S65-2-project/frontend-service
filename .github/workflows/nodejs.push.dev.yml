@@ -1,0 +1,56 @@
+name: Node.js CI
+
+on: [push]
+#  push:
+#    branches: [develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    container:
+      image: node:12.16.2
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.16.2
+      - name: Install dependencies
+        run: npm ci
+      - run: npm run build --if-present
+      - run: npm test
+        env:
+          CI: true
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: release-artifact
+          path: ./build
+      - name: Upload Dockerfile artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: dockerfile-artifact
+          path: ./Dockerfile
+  delivery:
+    needs: build
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Download release artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: release-artifact
+          path: .
+      - name: Download Dockerfile artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: dockerfile-artifact
+          path: .
+      - name: Deliver Docker image
+        env:
+          CONTAINER_IMAGE: ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
+          CONTAINER_IMAGE_LATEST: ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.REPOSITORY_NAME }}:develop
+        run: |
+          docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_ACCESS_TOKEN }}
+          docker build -t $CONTAINER_IMAGE -t $CONTAINER_IMAGE_LATEST .
+          docker push $CONTAINER_IMAGE
+          docker push $CONTAINER_IMAGE_LATEST
