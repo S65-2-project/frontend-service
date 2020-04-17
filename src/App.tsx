@@ -10,24 +10,22 @@ import {Provider} from "react-redux";
 import store from "./store";
 import {BrowserRouter as Router} from "react-router-dom";
 
-function App() {
-    return (
-        <div>
-            <Provider store={store}>
-                <Router>
-                    <TopNavigation/>
-                    <main role="main" className="container">
-                        <Switch>
-                            <Route exact path='/' component={Home}/>
-                            <Route path='/login' component={Login}/>
-                            <Route path='/register' component={Register}/>
-                            <Route path='/logout' component={Logout}/>
-                        </Switch>
-                    </main>
-                </Router>
-            </Provider>
-        </div>
-    );
-}
+const App = () => (
+    <div>
+        <Provider store={store}>
+            <Router>
+                <TopNavigation/>
+                <main role="main" className="container">
+                    <Switch>
+                        <Route exact path='/' component={Home}/>
+                        <Route path='/login' component={Login}/>
+                        <Route path='/register' component={Register}/>
+                        <Route path='/logout' component={Logout}/>
+                    </Switch>
+                </main>
+            </Router>
+        </Provider>
+    </div>
+);
 
 export default App;

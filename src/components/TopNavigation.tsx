@@ -1,13 +1,19 @@
 import React from 'react';
-import {withRouter, NavLink} from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import {connect} from "react-redux";
 import {Nav, Navbar} from "react-bootstrap";
 
+/**
+ * renders the top navigation menu
+ * @param props auth state from redux
+ * @constructor 
+ */
 const TopNavigation = (props : any) => {
 
     let loginLink;
     let loginText;
     let registerText;
+
     if (props.auth.isAuthenticated) {
         loginLink = '/logout';
         loginText = 'Logout';
@@ -20,7 +26,6 @@ const TopNavigation = (props : any) => {
         );
     }
 
-
     return (
         <div>
             <Navbar  bg="dark" variant="dark">
@@ -30,15 +35,16 @@ const TopNavigation = (props : any) => {
                         {registerText}
                         <Nav.Link href={loginLink}>{loginText}</Nav.Link>
                     </Nav>
-
                 </Navbar.Collapse>
-
             </Navbar>
         </div>
     );
 };
 
-
+/**
+ * maps redux state to props
+ * @param state of the redux
+ */
 const mapStateToProps = (state : any) => {
     return {
         auth: state.auth

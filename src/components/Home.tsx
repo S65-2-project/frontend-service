@@ -1,9 +1,11 @@
 import React from 'react';
 
-function Home() {
-    return (
-        <div><h1>#stayhome</h1></div>
-    );
-};
+/***
+ * renders the home component
+ * @constructor
+ */
+const Home = () => (
+    <div><h1>#stayhome</h1></div>
+);
 
 export default Home
