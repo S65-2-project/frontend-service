@@ -60,10 +60,11 @@ const Login = (props : any) => {
      * @param event on register button press
      */
     const handleRegister = async (event: any) => {
+        setError(true);
+
         //validates input
-        if (!validateInput()) {
-            event.preventDefault();
-            return false;
+       if (!validateInput()) {
+            return;
         }
 
         //creates user JSON object
@@ -84,17 +85,15 @@ const Login = (props : any) => {
         //send API call to the Account server
         let response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL, options);
 
+        let body = await response.text();
         //show error and stop flow
         if (response.status >= 400) {
-            let errortext = await response.body;
             setError(<Alert variant="danger" onClose={() => setError(true)} dismissible>
-                <Alert.Heading>{errortext}</Alert.Heading>
+                <Alert.Heading>{body}</Alert.Heading>
             </Alert>);
-            event.preventDefault();
-            return false;
+            return;
         }
-
-        props.history.push("/");
+        props.history.push("/login");
     }
 
     /**
@@ -129,7 +128,7 @@ const Login = (props : any) => {
             }} />
         ) :
         (
-            <Form className={"form-container"} onSubmit={handleRegister} >
+            <Form className={"form-container"}>
                 {error}
                 <Form.Group controlId="formBasicEmail">
                     <Form.Label>Email address</Form.Label>
@@ -147,7 +146,7 @@ const Login = (props : any) => {
                     <Form.Label>Password (repeat)</Form.Label>
                     <Form.Control type="password" placeholder="Password" value={passwordRepeat} onChange={onPasswordRepeatChange}/>
                 </Form.Group>
-                <Button variant="primary" type="submit" href={"/"}>
+                <Button variant="primary" onClick={handleRegister} >
                     Register now!
                 </Button>
             </Form>
