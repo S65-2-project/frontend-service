@@ -24,13 +24,14 @@ const Profile = (props: any) => {
     const [profileInformationBlock, setProfileInformationBlock] = React.useState(<div>loading...</div>);
     const [editButton, setEditButton] = React.useState(<div/>)
     const [editMode, setEditMode] = React.useState(false);
+    const [passwordBlock,setPasswordBlock] = React.useState(<div/>);
 
     /**
      * Runs when page loads in and the userId is filled in. will run again when editmode has been changed.
      */
     useEffect(() => {
         initialize(editMode)
-    }, );
+    },);
 
     /**
      * Method used for loading the userinformation
@@ -59,16 +60,93 @@ const Profile = (props: any) => {
         await initialize(false);
     };
 
-    const onEmailChange = (event : any) => {
+    const onEmailChange = (event: any) => {
         user.Email = event.target.value;
     };
 
-    const onIsDelegateChange = (event : any) => {
+    const onIsDelegateChange = (event: any) => {
         user.isDelegate = event.target.value;
     };
 
-    const onDAPPOwnerChange = (event : any) => {
-      user.isdAppOwner = event.target.value;
+    const onDAPPOwnerChange = (event: any) => {
+        user.isdAppOwner = event.target.value;
+    };
+    const changePassword = (event : any) =>{
+        if(event.target.value){
+            setPasswordBlock(editPasswordBlock);
+        }
+        else{
+            setPasswordBlock(<div/>);
+        }
+    };
+
+    const editPasswordBlock = () => {
+        return (
+            <Form>
+                <Form.Group>
+                    <Form.Label>Old password</Form.Label>
+                    <Form.Control type="password" placeholder="enter old password" onChange={onEmailChange}/>
+                </Form.Group>
+
+                <Form.Group>
+                    <Form.Label>New password</Form.Label>
+                    <Form.Control type="password" placeholder="enter new password" onChange={onEmailChange}/>
+                </Form.Group>
+
+                <Form.Group>
+                    <Form.Label>Repeat new password</Form.Label>
+                    <Form.Control type="password" placeholder="repeat new password" onChange={onEmailChange}/>
+                </Form.Group>
+            </Form>
+        )
+    };
+
+    /**
+     * Block that is used when just viewing a profile.
+     * @param user which contains display information.
+     */
+    const informationBlockNotEdit = (user: User) =>{
+        return (
+            <Form>
+                <Form.Group>
+                    <Form.Label>email: {user.Email}</Form.Label>
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>is a delegate: {user.isDelegate}</Form.Label>
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>is dAppOwner: {user.isdAppOwner}</Form.Label>
+                </Form.Group>
+            </Form>
+        )
+    };
+
+    /**
+     * Block that is used when editing a profile.
+     */
+    const informationBlockEditMode = () =>{
+        return(
+            <form>
+                <Form.Group>
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control type="text" placeholder="Enter email" onChange={onEmailChange}/>
+                </Form.Group>
+
+                <Form.Group controlId="formBasicCheckbox">
+                    <Form.Check type="checkbox" label="is a delegate" onChange={onIsDelegateChange}/>
+                </Form.Group>
+
+                <Form.Group controlId="formBasicCheckbox">
+                    <Form.Check type="checkbox" label="is a dAppOwner" onChange={onDAPPOwnerChange}/>
+                </Form.Group>
+
+                <Form.Group controlId="formBasicCheckbox">
+                    <Form.Check type="checkbox" label="changePassword" onChange={changePassword}/>
+                </Form.Group>
+
+                {passwordBlock}
+            </form>
+        )
     };
 
     /**
@@ -79,36 +157,12 @@ const Profile = (props: any) => {
     const setInformationDisplay = (user: User, loggedIn: boolean, edit: boolean) => {
         if (!edit) {
             setProfileInformationBlock(
-                <Form>
-                    <Form.Group>
-                        <Form.Label>email: {user.Email}</Form.Label>
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>is a delegate: {user.isDelegate}</Form.Label>
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>is dAppOwner: {user.isdAppOwner}</Form.Label>
-                    </Form.Group>
-                </Form>
+                informationBlockNotEdit(user)
             );
         } else {
             setProfileInformationBlock(
-                <form>
-                    <Form.Group>
-                        <Form.Label>email</Form.Label>
-                        <Form.Control type="text" placeholder="Enter email" onChange={onEmailChange}/>
-                    </Form.Group>
-
-                    <Form.Group controlId="formBasicCheckbox">
-                        <Form.Check type="checkbox" label="is a delegate" onChange={onIsDelegateChange}/>
-                    </Form.Group>
-
-                    <Form.Group controlId="formBasicCheckbox">
-                        <Form.Check type="checkbox" label="is a dAppOwner" onChange={onDAPPOwnerChange}/>
-                    </Form.Group>
-
-                </form>
-            )
+                informationBlockEditMode()
+            );
         }
         if (loggedIn && !edit) {
             setEditButton(<Button onClick={() => {
@@ -128,6 +182,7 @@ const Profile = (props: any) => {
         </div>
     )
 };
+
 
 /**
  * maps redux state to props
@@ -155,7 +210,7 @@ export async function GetUserInformation(userId: string): Promise<User> {
      * Url is now local TODO: change this when backend gets updated
      */
     try {
-        let idRequest: string ="/"+userId; //TODO FILL THIS IN WHEN Backend has expectations.
+        let idRequest: string = "/" + userId; //TODO FILL THIS IN WHEN Backend has expectations.
         let response: Response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL + idRequest, options);
         let body = await response.text();
         if (response.status === 200) {
@@ -169,23 +224,22 @@ export async function GetUserInformation(userId: string): Promise<User> {
     }
 }
 
-export async function UpdateUserInformation(user : User) : Promise<boolean> {
+export async function UpdateUserInformation(user: User): Promise<boolean> {
     let options: RequestInit = {
         method: "PUT",
-        body : JSON.stringify(user),
+        body: JSON.stringify(user),
         headers: {
-            "Content-Type" : "application/json"
+            "Content-Type": "application/json"
         },
         mode: "cors",
         cache: "default"
     };
 
-    try{
-        let response : Response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL+"/"+user.Id, options);
+    try {
+        let response: Response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL + "/" + user.Id, options);
         return response.status === 200;
-    }
-    catch(Exception){
-        console.log("EXCEPTION WHEN UPDATING USER: " + JSON.stringify(user)+" Exception: " + Exception)
+    } catch (Exception) {
+        console.log("EXCEPTION WHEN UPDATING USER: " + JSON.stringify(user) + " Exception: " + Exception)
         return false;
     }
 };
