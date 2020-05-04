@@ -255,9 +255,7 @@ export async function GetUserInformation(userId: string): Promise<User> {
         mode: "cors",
         cache: "default"
     };
-    /**
-     * Url is now local
-     */
+    
     try {
         let idRequest: string = "/" + userId;
         let response: Response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL + idRequest, options);
