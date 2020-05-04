@@ -4,7 +4,6 @@ import User, {initialUserState} from "./types/user";
 import config from "../config.json"
 import {withRouter} from "react-router";
 import {connect} from "react-redux";
-import Login from "../components/Login";
 import {authenticationState} from "../reducers/AuthReducer";
 import {Button, Form} from "react-bootstrap";
 
@@ -31,7 +30,7 @@ const Profile = (props: any) => {
      */
     useEffect(() => {
         initialize(editMode)
-    }, [editMode]);
+    }, );
 
     /**
      * Method used for loading the userinformation
@@ -40,6 +39,7 @@ const Profile = (props: any) => {
     const initialize = async (edit: boolean) => {
         await setProfileId(useParams);
         await setCurrentlyLoggedInUser(props.auth.User);
+        await setEditMode(edit);
         //checks if loggedInuser is the same as the profile you want to check, if it is then you have the option edit the profile.
         if (currentlyLoggedInUser.Id === profileId) {
             setUser(currentlyLoggedInUser);
@@ -56,8 +56,7 @@ const Profile = (props: any) => {
     const saveChangesEdit = async () => {
         //TODO put request to server with model.
         await UpdateUserInformation(user);
-        await setEditMode(false);
-
+        await initialize(false);
     };
 
     const onEmailChange = (event : any) => {
@@ -77,8 +76,8 @@ const Profile = (props: any) => {
      * @param user which contains the information
      * @param loggedIn indicates if the information display should contain an edit button.
      */
-    const setInformationDisplay = (user: User, loggedIn: boolean, editMode: boolean) => {
-        if (!editMode) {
+    const setInformationDisplay = (user: User, loggedIn: boolean, edit: boolean) => {
+        if (!edit) {
             setProfileInformationBlock(
                 <Form>
                     <Form.Group>
@@ -111,11 +110,11 @@ const Profile = (props: any) => {
                 </form>
             )
         }
-        if (loggedIn && !editMode) {
+        if (loggedIn && !edit) {
             setEditButton(<Button onClick={() => {
-                setEditMode(true)
+                initialize(true)
             }}>Edit</Button>);
-        } else if (editMode) {
+        } else if (edit) {
             setEditButton(<Button onClick={saveChangesEdit}>Save changes</Button>)
         } else {
             setEditButton(<div/>)
@@ -140,7 +139,7 @@ const mapStateToProps = (state: authenticationState) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps)(Login));
+export default withRouter(connect(mapStateToProps)(Profile));
 
 export async function GetUserInformation(userId: string): Promise<User> {
 
@@ -157,7 +156,7 @@ export async function GetUserInformation(userId: string): Promise<User> {
      */
     try {
         let idRequest: string ="/"+userId; //TODO FILL THIS IN WHEN Backend has expectations.
-        let response: Response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL + idRequest);
+        let response: Response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL + idRequest, options);
         let body = await response.text();
         if (response.status === 200) {
             return JSON.parse(body); //returns type User if backend is consistent.
@@ -183,12 +182,7 @@ export async function UpdateUserInformation(user : User) : Promise<boolean> {
 
     try{
         let response : Response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL+"/"+user.Id, options);
-        if(response.status == 200){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return response.status === 200;
     }
     catch(Exception){
         console.log("EXCEPTION WHEN UPDATING USER: " + JSON.stringify(user)+" Exception: " + Exception)
