@@ -1,15 +1,15 @@
 export default interface User{
-    Id: string,
-    Email : string,
+    id: string,
+    email : string,
     isDelegate: boolean,
-    isdAppOwner: boolean,
-    Token : string
+    isDAppOwner: boolean,
+    token : string
 };
 
 export const initialUserState : User ={
-    Id : "",
-    Email : "",
+    id : "",
+    email : "",
     isDelegate : false,
-    isdAppOwner : false,
-    Token : ""
+    isDAppOwner : false,
+    token : ""
 };

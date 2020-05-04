@@ -18,11 +18,11 @@ const App = () => (
                 <TopNavigation/>
                 <main role="main" className="container">
                     <Switch>
-                        <Route exact path='/' component={Home}/>
+                        <Route path='/profile/:id'>{Profile}</Route>
                         <Route path='/login' component={Login}/>
                         <Route path='/register' component={Register}/>
                         <Route path='/logout' component={Logout}/>
-                        <Route path='profile/:id'>{Profile}</Route>
+                        <Route exact path='/' component={Home}/>
                     </Switch>
                 </main>
             </Router>
