@@ -53,16 +53,21 @@ const Login = (props : any) => {
         //send API call to the Account server
         let response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL + '/login', options);
 
-        let body = await response.text();
 
         //show error and stop flow
         if (response.status >= 400) {
+            let body = await response.text();
             setError(<Alert variant="danger" onClose={() => setError(true)} dismissible>
                 <Alert.Heading>{body}</Alert.Heading>
             </Alert>);
             return;
         }
-        props.history.push("/login");
+
+        //save response body to redux store
+        let body = await response.json();
+        login(body);
+
+        props.history.push("/");
     }
 
     let content = props.auth.isAuthenticated ?

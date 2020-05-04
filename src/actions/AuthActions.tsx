@@ -1,12 +1,12 @@
 /**
  * wrapper for the dispatch redux login
- * @param token jwt from the user
+ * @param user user to save
  */
-export function login(token : any) {
+export function login(user : any) {
     return (dispath: any) => {
         dispath({
             type: 'LOGIN',
-            payload: token
+            payload: user
         });
     }
 }

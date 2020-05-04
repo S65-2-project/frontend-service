@@ -8,11 +8,16 @@ import {logout} from '../actions/AuthActions';
  * @param props auth state from redux
  * @constructor
  */
-const Logout = (props : any) => (
-    <div><Redirect to={{
-        pathname: '/'
-    }}/></div>
-);
+const Logout = (props : any) => {
+    //redirects the user to the main page and logs him out
+    logout()
+
+    return (
+        <div><Redirect to={{
+            pathname: '/'
+        }}/></div>
+    );
+}
 
 /**
  * maps redux state to props
@@ -30,7 +35,7 @@ const mapStateToProps = (state : any) => {
  */
 const mapDispatchToProps = (dispatch : any) => {
     return {
-        login: (token :any) => {
+        logout: () => {
             dispatch(logout());
         }
     };
