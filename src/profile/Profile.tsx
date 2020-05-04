@@ -38,7 +38,7 @@ const Profile = (props: any) => {
     //Boolean that indicates if the user is in edit mode or not.
     const [editMode, setEditMode] = React.useState(false);
 
-    //Boolean which indicates if the user has decided to change to password. //TODO the password change implement, right now it is not update with the request.
+    //Boolean which indicates if the user has decided to change to password.
     const [changePassword,setChangePassword] = React.useState(false);
 
     //String which has the oldPassword
@@ -77,8 +77,7 @@ const Profile = (props: any) => {
      * Method used for saving changes of a profile edit.
      */
     const saveChangesEdit = async () => {
-        //TODO put request to server with model.
-        await UpdateUserInformation(user);//TODO IMPLEMENT PASSWORD in Change.
+        await UpdateUserInformation(user);
         if(changePassword && oldPassword !== "" && newPassword !== ""&& repeatNewPassword !== ""){
             await ChangePassword(user.Id,oldPassword, newPassword);
         }
@@ -132,17 +131,17 @@ const Profile = (props: any) => {
             <Form>
                 <Form.Group>
                     <Form.Label>Old password</Form.Label>
-                    <Form.Control type="password" placeholder="enter old password" onChange={onChangeOldPassword}/> //TODO onChange
+                    <Form.Control type="password" placeholder="enter old password" onChange={onChangeOldPassword}/>
                 </Form.Group>
 
                 <Form.Group>
                     <Form.Label>New password</Form.Label>
-                    <Form.Control type="password" placeholder="enter new password" onChange={onChangeNewPassword}/> //TODO onChange
+                    <Form.Control type="password" placeholder="enter new password" onChange={onChangeNewPassword}/>
                 </Form.Group>
 
                 <Form.Group>
                     <Form.Label>Repeat new password</Form.Label>
-                    <Form.Control type="password" placeholder="repeat new password" onChange={onChangeNewRepeatPassword}/> //TODO onChange
+                    <Form.Control type="password" placeholder="repeat new password" onChange={onChangeNewRepeatPassword}/>
                 </Form.Group>
             </Form>
         )
@@ -257,10 +256,10 @@ export async function GetUserInformation(userId: string): Promise<User> {
         cache: "default"
     };
     /**
-     * Url is now local TODO: change this when backend gets updated
+     * Url is now local
      */
     try {
-        let idRequest: string = "/" + userId; //TODO FILL THIS IN WHEN Backend has expectations.
+        let idRequest: string = "/" + userId;
         let response: Response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL + idRequest, options);
         let body = await response.text();
         if (response.status === 200) {
