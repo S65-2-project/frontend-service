@@ -45,7 +45,7 @@ const Profile = (props: any) => {
     //Html block which contains the fields oldpassword, newpassword, repeatnewpassword.
     const [passwordBlock, setPasswordBlock] = React.useState(<div/>);
 
-
+    const [deleteProfileButtonBlock, setDeleteProfileButtonBlock] = React.useState(<div/>);
 
     //Boolean which indicates if the user has decided to change to password.
     let changePassword : boolean = false;
@@ -196,8 +196,8 @@ const Profile = (props: any) => {
                 <Form.Group controlId="formBasicCheckbox">
                     <Form.Check type="checkbox" label="changePassword" onChange={setChangePasswordBlock}/>
                 </Form.Group>
-
                 {passwordBlock}
+                {deleteProfileButtonBlock}
             </form>
         )
     };
@@ -223,15 +223,20 @@ const Profile = (props: any) => {
         }
 
         //Button that you can use if you are logged to start and save edit.
-        if (loggedIn && !edit) {
+        if (loggedIn && !edit) { //If logged in but not in edit mode
             console.log("3!");
             setEditButton(<Button onClick={() => {
                 initialize(profileId, true);
             }}>Edit</Button>);
-        } else if (edit && loggedIn) {
+            //setDeleteProfileButtonBlock()//TODO set to empty <div/>
+
+        }
+        else if (edit && loggedIn) {//If logged in and in edit mode
             console.log("4!");
             setEditButton(<Button onClick={saveChangesEdit}>Save changes</Button>)
-        } else {
+            //setDeleteProfileButtonBlock()//TODO set to deleteprofilebutton with function.
+        }
+        else {
             console.log("5!");
             setEditButton(<div/>)
         }
@@ -327,7 +332,5 @@ export async function ChangePassword(userId: string, oldPassword: string, newPas
         console.log("CHANGEPASSWORD EXPECTION: " + e);
         return false;
     }
-
-
 }
 
