@@ -2,11 +2,18 @@
  * wrapper for the dispatch redux login
  * @param user user to save
  */
-export function login(user : any) {
+import User from "../profile/types/user";
+import {authenticationState} from "../reducers/AuthReducer";
+
+export function login(user : User) {
+    let state : authenticationState = {
+        User: user,
+        isAuthenticated: true
+    }
     return (dispath: any) => {
         dispath({
             type: 'LOGIN',
-            payload: user
+            payload: state
         });
     }
 }

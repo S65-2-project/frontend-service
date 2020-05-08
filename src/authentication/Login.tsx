@@ -5,6 +5,7 @@ import {login} from '../actions/AuthActions';
 import {Alert, Button, Form} from "react-bootstrap";
 import config from "../config.json";
 import {IAuthenticateUser} from "./IAuthenticateUser";
+import User from "../profile/types/user";
 
 /***
  * renders the login component
@@ -53,6 +54,7 @@ const Login = (props : any) => {
         //send API call to the Account server
         let response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL + '/login', options);
 
+        console.log(response.status)
 
         //show error and stop flow
         if (response.status >= 400) {
@@ -64,8 +66,8 @@ const Login = (props : any) => {
         }
 
         //save response body to redux store
-        let body = await response.json();
-        login(body);
+        let body : User = await response.json();
+        props.login(body);
 
         props.history.push("/");
     }
@@ -117,8 +119,8 @@ const mapStateToProps = (state : any) => {
  */
 const mapDispatchToProps = (dispatch : any) => {
     return {
-        login: (token :any) => {
-            dispatch(login(token));
+        login: (user : User) => {
+            dispatch(login(user));
         }
     };
 };

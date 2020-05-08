@@ -17,6 +17,7 @@ const TopNavigation = (props : any) => {
     if (props.auth.isAuthenticated) {
         loginLink = '/logout';
         loginText = 'Logout';
+        registerText = ('');
     }
     else {
         loginLink = '/login';

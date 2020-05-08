@@ -10,7 +10,7 @@ import {logout} from '../actions/AuthActions';
  */
 const Logout = (props : any) => {
     //redirects the user to the main page and logs him out
-    logout()
+    props.logout()
 
     return (
         <div><Redirect to={{
