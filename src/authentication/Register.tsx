@@ -34,8 +34,7 @@ const Register = (props : any) => {
         let reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,32}$/;
         if (!password.match(reg)){
             setError(<Alert variant="danger" onClose={() => setError(true)} dismissible>
-                <Alert.Heading>The password does have atleast 1 small letter, 1 capital letter, 1 special number, 1 number and between 8 and 32 characters</Alert.Heading>
-                <p>The password is not correct</p>
+                <Alert.Heading>The password does have atleast 1 small letter, 1 capital letter, 1 special character, 1 number and between 8 and 32 characters</Alert.Heading>
             </Alert>)
             return false;
         }
@@ -56,6 +55,9 @@ const Register = (props : any) => {
      * @param event on register button press
      */
     const handleRegister = async (event: any) => {
+        event.preventDefault();
+        event.stopPropagation();
+
         setError(true);
 
         //validates input
@@ -125,7 +127,7 @@ const Register = (props : any) => {
             }} />
         ) :
         (
-            <Form className={"form-container"}>
+            <Form className={"form-container"} onSubmit={handleRegister}>
                 {error}
                 <Form.Group controlId="formBasicEmail">
                     <Form.Label>Email address</Form.Label>
@@ -143,7 +145,7 @@ const Register = (props : any) => {
                     <Form.Label>Password (repeat)</Form.Label>
                     <Form.Control type="password" placeholder="Password" value={passwordRepeat} onChange={onPasswordRepeatChange}/>
                 </Form.Group>
-                <Button variant="primary" onClick={handleRegister} >
+                <Button  type={"submit"} variant="primary" >
                     Register now!
                 </Button>
             </Form>

@@ -33,8 +33,13 @@ const Login = (props : any) => {
         setPassword(event.target.value);
     }
 
-    let handleLogin = async () => {
-        setError(true);
+    let handleLogin = async (event : any) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        setError('');
+
+        if (email.length === 0 || password.length === 0) return;
 
         //creates user JSON object
         let user: IAuthenticateUser = {
@@ -54,8 +59,6 @@ const Login = (props : any) => {
         //send API call to the Account server
         let response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL + '/login', options);
 
-        console.log(response.status)
-
         //show error and stop flow
         if (response.status >= 400) {
             let body = await response.text();
@@ -74,24 +77,22 @@ const Login = (props : any) => {
 
     let content = props.auth.isAuthenticated ?
         (
-            <div>
-                <Redirect to={{
-                    pathname: '/'
-                }} />
-            </div>
+            <Redirect to={{
+                pathname: '/'
+            }} />
         ) :
         (
-            <Form className={"form-container"}>
+            <Form className={"form-container"} onSubmit={handleLogin}>
                 {error}
                 <Form.Group controlId="formBasicEmail">
                     <Form.Label>Email address</Form.Label>
-                    <Form.Control type="email" placeholder="Enter email" value={email} onChange={onEmailChange}/>
+                    <Form.Control type="email" placeholder="Email" value={email} onChange={onEmailChange}/>
                 </Form.Group>
                 <Form.Group controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
                     <Form.Control type="password" placeholder="Password" value={password} onChange={onPasswordChange}/>
                 </Form.Group>
-                <Button variant="primary" onClick={handleLogin} >
+                <Button type={"submit"} variant="primary" onClick={handleLogin}>
                     Login
                 </Button>
             </Form>

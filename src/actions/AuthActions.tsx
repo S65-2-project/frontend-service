@@ -1,10 +1,10 @@
+import User from "../profile/types/user";
+import {authenticationState} from "../reducers/AuthReducer";
+
 /**
  * wrapper for the dispatch redux login
  * @param user user to save
  */
-import User from "../profile/types/user";
-import {authenticationState} from "../reducers/AuthReducer";
-
 export function login(user : User) {
     let state : authenticationState = {
         User: user,

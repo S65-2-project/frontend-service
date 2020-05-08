@@ -13,9 +13,9 @@ const Logout = (props : any) => {
     props.logout()
 
     return (
-        <div><Redirect to={{
+        <Redirect to={{
             pathname: '/'
-        }}/></div>
+        }}/>
     );
 }
 
