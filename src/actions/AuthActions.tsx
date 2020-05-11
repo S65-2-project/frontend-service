@@ -1,12 +1,19 @@
+import User from "../profile/types/user";
+import {authenticationState} from "../reducers/AuthReducer";
+
 /**
  * wrapper for the dispatch redux login
- * @param token jwt from the user
+ * @param user user to save
  */
-export function login(token : any) {
+export function login(user : User) {
+    let state : authenticationState = {
+        User: user,
+        isAuthenticated: true
+    }
     return (dispath: any) => {
         dispath({
             type: 'LOGIN',
-            payload: token
+            payload: state
         });
     }
 }

@@ -4,18 +4,14 @@ import React from "react";
 import {Alert, Button, Form} from "react-bootstrap";
 import './Register.css'
 import config from '../config.json'
-
-interface IAuthenticateUser {
-    Email: string;
-    Password: string;
-}
+import {IAuthenticateUser} from "./IAuthenticateUser";
 
 /**
  * renders the login component
  * @param props auth state form redux
  * @constructor
  */
-const Login = (props : any) => {
+const Register = (props : any) => {
     const [password, setPassword] = React.useState('');
     const [passwordRepeat, setPasswordRepeat] = React.useState('');
     const [email, setEmail] = React.useState('');
@@ -38,14 +34,13 @@ const Login = (props : any) => {
         let reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,32}$/;
         if (!password.match(reg)){
             setError(<Alert variant="danger" onClose={() => setError(true)} dismissible>
-                <Alert.Heading>The password does have atleast 1 small letter, 1 capital letter, 1 special number, 1 number and between 8 and 32 characters</Alert.Heading>
-                <p>The password is not correct</p>
+                <Alert.Heading>The password does have atleast 1 small letter, 1 capital letter, 1 special character, 1 number and between 8 and 32 characters</Alert.Heading>
             </Alert>)
             return false;
         }
 
         //checks if the given email is valid
-        reg = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+        reg = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/;
         if (!email.match(reg)){
             setError(<Alert variant="danger" onClose={() => setError(true)} dismissible>
                 <Alert.Heading>The email is not valid!</Alert.Heading>
@@ -60,6 +55,9 @@ const Login = (props : any) => {
      * @param event on register button press
      */
     const handleRegister = async (event: any) => {
+        event.preventDefault();
+        event.stopPropagation();
+
         setError(true);
 
         //validates input
@@ -86,6 +84,7 @@ const Login = (props : any) => {
         let response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL, options);
 
         let body = await response.text();
+
         //show error and stop flow
         if (response.status >= 400) {
             setError(<Alert variant="danger" onClose={() => setError(true)} dismissible>
@@ -128,7 +127,7 @@ const Login = (props : any) => {
             }} />
         ) :
         (
-            <Form className={"form-container"}>
+            <Form className={"form-container"} onSubmit={handleRegister}>
                 {error}
                 <Form.Group controlId="formBasicEmail">
                     <Form.Label>Email address</Form.Label>
@@ -146,7 +145,7 @@ const Login = (props : any) => {
                     <Form.Label>Password (repeat)</Form.Label>
                     <Form.Control type="password" placeholder="Password" value={passwordRepeat} onChange={onPasswordRepeatChange}/>
                 </Form.Group>
-                <Button variant="primary" onClick={handleRegister} >
+                <Button  type={"submit"} variant="primary" >
                     Register now!
                 </Button>
             </Form>
@@ -169,4 +168,4 @@ const mapStateToProps = (state : any) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps)(Login));
+export default withRouter(connect(mapStateToProps)(Register));
