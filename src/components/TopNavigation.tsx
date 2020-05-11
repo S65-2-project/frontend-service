@@ -10,9 +10,9 @@ import {Nav, Navbar} from "react-bootstrap";
  */
 const TopNavigation = (props: any) => {
 
-    let loginLink;
-    let loginText;
-    let registerText;
+    const [loginLink,setLoginLink] = React.useState("");
+    const [loginText, setLoginText] = React.useState("");
+    const [registerText, setRegisterText] = React.useState(<div/>);
 
     const [profileNavigationBlock, setProfileNavigationBlock] = React.useState(<Nav.Link href={""}>Profile</Nav.Link>)
 
@@ -21,21 +21,19 @@ const TopNavigation = (props: any) => {
 
     const initialize = () => {
         if (props.auth.isAuthenticated) {
-            loginLink = '/logout';
-            loginText = 'Logout';
+            setLoginLink('/logout');
+            setLoginText('Logout');
         } else {
             setProfileNavigationBlock(
                 <Nav.Link href={"/profile/" + "61bc5a60-9666-4ea2-8f7f-906e93efd610"}>Profile</Nav.Link>
             );
-            loginLink = '/login';
-            loginText = 'Login';
-            registerText = (
+            setLoginLink('/login');
+            setLoginText('Login');
+            setRegisterText(
                 <Nav.Link href='register'>Register now!</Nav.Link>
             );
         }
     };
-
-
 
     return (
         <div>

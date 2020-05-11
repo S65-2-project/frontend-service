@@ -20,7 +20,7 @@ const authReducer = (
     switch (action.type) {
         //in case of login save the token as user and set authenticated
         case 'LOGIN':
-            state = { ...state, ...action.payload};
+            state = { ...state, ...action.payload };
             break;
         //in case of logout remove the token and unset authenticated
         case 'LOGOUT':
