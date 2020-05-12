@@ -14,7 +14,7 @@ const TopNavigation = (props: any) => {
     const [loginText, setLoginText] = React.useState("");
     const [registerText, setRegisterText] = React.useState(<div/>);
 
-    const [profileNavigationBlock, setProfileNavigationBlock] = React.useState(<Nav.Link href={""}>Profile</Nav.Link>)
+    const [profileNavigationBlock, setProfileNavigationBlock] = React.useState(<div/>)
 
     useEffect(() => {
         const initialize = () => {
@@ -22,7 +22,7 @@ const TopNavigation = (props: any) => {
                 setLoginLink('/logout');
                 setLoginText('Logout');
                 setProfileNavigationBlock(
-                    <Nav.Link href={"/profile/" + props.auth.User.id}>Profile</Nav.Link>
+                    <Nav.Link href={"/profile/" + props.auth.User.id}>My Profile</Nav.Link>
                 );
                 setRegisterText(
                     <div/>
@@ -33,6 +33,7 @@ const TopNavigation = (props: any) => {
                 setRegisterText(
                     <Nav.Link href='register'>Register now!</Nav.Link>
                 );
+                setProfileNavigationBlock(<div/>);
             }
         };
         initialize()

@@ -54,6 +54,9 @@ const Profile = (props: any) => {
     //HTML block whichcontains an error if need be to display one.
     const [error, setError] = React.useState(<div/>);
 
+    const [succesUpdate,setSuccesUpdate] = React.useState(<div/>);
+    const [succesPasswordUpdate,setSuccesPasswordUpdate] = React.useState(<div/>);
+
     //HTML Block that lets u get out of the edit mode.
     const [cancelEditButton, setCancelEditButton] = React.useState(<div/>);
 
@@ -104,22 +107,48 @@ const Profile = (props: any) => {
      */
     const saveChangesEdit = async () => {
         try {
+
+            var reg = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/;
+            if (!profileUser.email.match(reg)) {
+                throw new Error("Email does not match the syntax of an email")
+            }else{
+                //ignore
+            }
+
+
             profileUser.isDelegate = isDelegate;
             profileUser.isDAppOwner = isDAppOwner;
-            await UpdateUserInformation(profileUser, props.auth.User.token);
-            if (changePassword && oldPassword !== "" && newPassword !== "" && repeatNewPassword !== "") { //Passwod fields should be filled in.{
-                await ChangePassword(profileUser.id, oldPassword, newPassword, props.auth.User.token);
+            if(await UpdateUserInformation(profileUser, props.auth.User.token)){
+                setSuccesUpdate(<Alert variant={"success"} onClick={()=> setSuccesUpdate(<div/>)}>Account information successfully updated.</Alert>)
             }
-            else if(changePassword && newPassword !== repeatNewPassword){
-                throw new Error("Repeat is not the same as the new password");
+            else{
+                //ignore
             }
-            else {
 
+            if(changePassword) {
+                if (changePassword && oldPassword !== "" && newPassword !== "" && repeatNewPassword !== "") {
+                    if (changePassword && newPassword !== repeatNewPassword) {
+                        throw new Error("Repeat is not the same as the new password, so the password is not updated");
+                    }
+
+                    if (await ChangePassword(profileUser.id, oldPassword, newPassword, props.auth.User.token)) {
+                        setSuccesPasswordUpdate(<Alert variant={"success"} onClick={() => setSuccesUpdate(<div/>)}>Password
+                            successfully changed.</Alert>)
+                    }
+                } else {
+                    throw new Error("Did you mean to change the password? The fields were empty.")
+                }
+            } else{
+                    //ignore
             }
+
+
+
             await initialize(false);
         }
          catch (ex) {
             setError(<Alert variant={"danger"} onClick={() => setError(<div/>)}>{ex.message}</Alert>)
+             return;
         }
     };
 
@@ -177,13 +206,13 @@ const Profile = (props: any) => {
         return (
             <Form>
                 <Form.Group>
-                    <Form.Label>email: {user.email}</Form.Label>
+                    <Form.Label>Email: {user.email}</Form.Label>
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label>is a delegate: {user.isDelegate.toString()}</Form.Label>
+                    <Form.Label>Is a delegate: {user.isDelegate.toString()}</Form.Label>
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label>is dAppOwner: {user.isDAppOwner.toString()}</Form.Label>
+                    <Form.Label>Is a dAppOwner: {user.isDAppOwner.toString()}</Form.Label>
                 </Form.Group>
             </Form>
         )
@@ -202,15 +231,15 @@ const Profile = (props: any) => {
                     </Form.Group>
 
                     <Form.Group controlId="formBasicCheckbox">
-                        <Form.Check type="checkbox" label="is a delegate" defaultChecked={isDelegate} onChange={(e : any) => {isDelegate = e.target.checked;}}/>
+                        <Form.Check type="checkbox" label="Is a delegate" defaultChecked={isDelegate} onChange={(e : any) => {isDelegate = e.target.checked;}}/>
                     </Form.Group>
 
                     <Form.Group controlId="formBasicCheckbox">
-                        <Form.Check type="checkbox" label="is a dAppOwner" defaultChecked={isDAppOwner} onChange={(e : any) => {isDAppOwner = e.target.checked;}}/>
+                        <Form.Check type="checkbox" label="Is a dAppOwner" defaultChecked={isDAppOwner} onChange={(e : any) => {isDAppOwner = e.target.checked;}}/>
                     </Form.Group>
 
                     <Form.Group controlId="formBasicCheckbox">
-                        <Form.Check type="checkbox" label="changePassword" onChange={setChangePasswordBlock}/>
+                        <Form.Check type="checkbox" label="Change Password" onChange={setChangePasswordBlock}/>
                     </Form.Group>
                     {/*{deleteProfileButtonBlock}*/}
                 </form>
@@ -254,6 +283,8 @@ const Profile = (props: any) => {
 
     return (
         <div>
+            {succesUpdate}
+            {succesPasswordUpdate}
             {error}
             {profileInformationBlock}
             {passwordBlock}
