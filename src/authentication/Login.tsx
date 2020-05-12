@@ -70,10 +70,10 @@ const Login = (props : any) => {
 
         //save response body to redux store
         let body : User = await response.json();
-        props.login(body);
+        await props.login(body);
 
         props.history.push("/");
-    }
+    };
 
     let content = props.auth.isAuthenticated ?
         (

@@ -16,17 +16,20 @@ const TopNavigation = (props: any) => {
 
     const [profileNavigationBlock, setProfileNavigationBlock] = React.useState(<Nav.Link href={""}>Profile</Nav.Link>)
 
-    useEffect( () => {initialize()},[]);
+    useEffect( () => {initialize()},[props.auth]);
 
 
     const initialize = () => {
         if (props.auth.isAuthenticated) {
             setLoginLink('/logout');
             setLoginText('Logout');
-        } else {
             setProfileNavigationBlock(
-                <Nav.Link href={"/profile/" + "61bc5a60-9666-4ea2-8f7f-906e93efd610"}>Profile</Nav.Link>
+                <Nav.Link href={"/profile/" + props.auth.User.id}>Profile</Nav.Link>
             );
+            setRegisterText(
+                <div/>
+            );
+        } else {
             setLoginLink('/login');
             setLoginText('Login');
             setRegisterText(

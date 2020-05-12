@@ -5,11 +5,13 @@ import config from "../config.json"
 import {withRouter} from "react-router";
 import {connect} from "react-redux";
 import {authenticationState} from "../reducers/AuthReducer";
-import {Button, Form} from "react-bootstrap";
+import {Button, Form, Alert} from "react-bootstrap";
 import {ChangePasswordModel} from "./types/ChangePasswordModel";
 
 
 const Profile = (props: any) => {
+
+
     //Boolean that indicates if the user is in edit mode or not.
     let editMode: boolean = false;
     const {id} = useParams();
@@ -47,8 +49,11 @@ const Profile = (props: any) => {
 
     const [deleteProfileButtonBlock, setDeleteProfileButtonBlock] = React.useState(<div/>);
 
+    //HTML block whichcontains an error if need be to display one.
+    const [error, setError] = React.useState(<div/>);
+
     //Boolean which indicates if the user has decided to change to password.
-    let changePassword : boolean = false;
+    let changePassword = false;
 
     //String which has the oldPassword
     let oldPassword: string = "";
@@ -56,6 +61,11 @@ const Profile = (props: any) => {
     let newPassword: string = "";
     //String which has the repeatNewPassword
     let repeatNewPassword: string = "";
+
+    //Boolean of isDelegate
+    let isDelegate: boolean = false;
+    //Boolean of isDAppOwner
+    let isDAppOwner : boolean = false;
 
 
     /**
@@ -69,28 +79,41 @@ const Profile = (props: any) => {
         //checks if loggedInuser is the same as the profile you want to check, if it is then you have the option edit the profile.
         if (currentlyLoggedInUser) {
             if (currentlyLoggedInUser.id === profileId) {
-                profileUser = currentlyLoggedInUser;
-                setInformationDisplay(currentlyLoggedInUser, true, edit);
+                profileUser = await GetUserInformation(id);
+                setInformationDisplay(profileUser, true, edit);
+            } else {
+                profileUser = await GetUserInformation(id);
+
+                setInformationDisplay(profileUser, false, edit);
             }
+            isDelegate = profileUser.isDelegate;
+            isDAppOwner = profileUser.isDAppOwner
         }
-        else {
-            profileUser = await GetUserInformation(id);
-            console.log(profileUser);
-            setInformationDisplay(profileUser, false, edit);
-        }
+
     };
 
     /**
      * Method used for saving changes of a profile edit.
      */
     const saveChangesEdit = async () => {
-        await UpdateUserInformation(profileUser);
-        if (changePassword && oldPassword !== "" && newPassword !== "" && repeatNewPassword !== "") {
-            await ChangePassword(profileUser.id, oldPassword, newPassword);
-        } else {
-            //ignore
+        try {
+            profileUser.isDelegate = isDelegate;
+            profileUser.isDAppOwner = isDAppOwner;
+            await UpdateUserInformation(profileUser, props.auth.User.token);
+            if (changePassword && oldPassword !== "" && newPassword !== "" && repeatNewPassword !== "") { //Passwod fields should be filled in.{
+                await ChangePassword(profileUser.id, oldPassword, newPassword, props.auth.User.token);
+            }
+            else if(changePassword && newPassword === repeatNewPassword){
+                throw new Error("Repeat is not the same as the new password");
+            }
+            else {
+
+            }
+            await initialize(profileId, false);
         }
-        await initialize(profileId, false);
+         catch (ex) {
+            setError(<Alert variant={"danger"} onClick={() => setError(<div/>)}>{ex.message}</Alert>)
+        }
     };
 
 
@@ -98,20 +121,13 @@ const Profile = (props: any) => {
         profileUser.email = event.target.value;
     };
 
-    const onIsDelegateChange = (event: any) => {
-        profileUser.isDelegate = event.target.value;
-    };
-
-    const onDAPPOwnerChange = (event: any) => {
-        profileUser.isDAppOwner = event.target.value;
-    };
 
     const onChangeOldPassword = (event: any) => {
         oldPassword = event.target.value;
     };
 
     const onChangeNewPassword = (event: any) => {
-        newPassword=event.target.value;
+        newPassword = event.target.value;
     };
 
     const onChangeNewRepeatPassword = (event: any) => {
@@ -120,9 +136,25 @@ const Profile = (props: any) => {
 
     //Method that is used for changing the edit passwordblock
     const setChangePasswordBlock = (event: any) => {
-        changePassword = event.target.value;
-        if (event.target.value) {
-            setPasswordBlock(editPasswordBlock);
+        changePassword = event.target.checked;
+        if (event.target.checked) {
+            setPasswordBlock(<Form>
+                <Form.Group>
+                    <Form.Label>Old password</Form.Label>
+                    <Form.Control type="password" placeholder="enter old password" onChange={onChangeOldPassword}/>
+                </Form.Group>
+
+                <Form.Group>
+                    <Form.Label>New password</Form.Label>
+                    <Form.Control type="password" placeholder="enter new password" onChange={onChangeNewPassword}/>
+                </Form.Group>
+
+                <Form.Group>
+                    <Form.Label>Repeat new password</Form.Label>
+                    <Form.Control type="password" placeholder="repeat new password"
+                                  onChange={onChangeNewRepeatPassword}/>
+                </Form.Group>
+            </Form>);
         } else {
             setPasswordBlock(<div/>);
         }
@@ -158,7 +190,8 @@ const Profile = (props: any) => {
      * @param user which contains display information.
      */
     const profileInformationBlockNotEdit = (user: User) => {
-        console.log("dasdas" + JSON.stringify(user));
+
+        setPasswordBlock(<div/>)
         return (
             <Form>
                 <Form.Group>
@@ -177,28 +210,29 @@ const Profile = (props: any) => {
     /**
      * Html Block that is used when editing a profile.
      */
-    const profileInformationBlockEditMode = () => {
+    let profileInformationBlockEditMode = () => {
         return (
-            <form>
-                <Form.Group>
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control type="text" placeholder="Enter email" onChange={onEmailChange}/>
-                </Form.Group>
+            <div>
+                <form>
+                    <Form.Group>
+                        <Form.Label>Email</Form.Label>
+                        <Form.Control type="text" placeholder="Enter email" defaultValue={profileUser.email} onChange={onEmailChange}/>
+                    </Form.Group>
 
-                <Form.Group controlId="formBasicCheckbox">
-                    <Form.Check type="checkbox" label="is a delegate" onChange={onIsDelegateChange}/>
-                </Form.Group>
+                    <Form.Group controlId="formBasicCheckbox">
+                        <Form.Check type="checkbox" label="is a delegate" defaultChecked={isDelegate} onChange={(e : any) => {isDelegate = e.target.checked;}}/>
+                    </Form.Group>
 
-                <Form.Group controlId="formBasicCheckbox">
-                    <Form.Check type="checkbox" label="is a dAppOwner" onChange={onDAPPOwnerChange}/>
-                </Form.Group>
+                    <Form.Group controlId="formBasicCheckbox">
+                        <Form.Check type="checkbox" label="is a dAppOwner" defaultChecked={isDAppOwner} onChange={(e : any) => {isDAppOwner = e.target.checked;}}/>
+                    </Form.Group>
 
-                <Form.Group controlId="formBasicCheckbox">
-                    <Form.Check type="checkbox" label="changePassword" onChange={setChangePasswordBlock}/>
-                </Form.Group>
-                {passwordBlock}
-                {deleteProfileButtonBlock}
-            </form>
+                    <Form.Group controlId="formBasicCheckbox">
+                        <Form.Check type="checkbox" label="changePassword" onChange={setChangePasswordBlock}/>
+                    </Form.Group>
+                    {deleteProfileButtonBlock}
+                </form>
+            </div>
         )
     };
 
@@ -208,15 +242,12 @@ const Profile = (props: any) => {
      * @param loggedIn indicates if the information display should contain an edit button.
      */
     const setInformationDisplay = (user: User, loggedIn: boolean, edit: boolean) => {
-        console.log(user);
         //profile block that is variable to edit and non edit mode.
         if (!edit) {
-            console.log("1!");
             setProfileInformationBlock(
                 profileInformationBlockNotEdit(user)
             );
         } else {
-            console.log("2!");
             setProfileInformationBlock(
                 profileInformationBlockEditMode
             );
@@ -224,28 +255,24 @@ const Profile = (props: any) => {
 
         //Button that you can use if you are logged to start and save edit.
         if (loggedIn && !edit) { //If logged in but not in edit mode
-            console.log("3!");
             setEditButton(<Button onClick={() => {
                 initialize(profileId, true);
             }}>Edit</Button>);
             //setDeleteProfileButtonBlock()//TODO set to empty <div/>
 
-        }
-        else if (edit && loggedIn) {//If logged in and in edit mode
-            console.log("4!");
+        } else if (edit && loggedIn) {//If logged in and in edit mode
             setEditButton(<Button onClick={saveChangesEdit}>Save changes</Button>)
             //setDeleteProfileButtonBlock()//TODO set to deleteprofilebutton with function.
-        }
-        else {
-            console.log("5!");
+        } else {
             setEditButton(<div/>)
         }
-        console.log("end!")
     };
 
     return (
         <div>
+            {error}
             {profileInformationBlock}
+            {passwordBlock}
             {editButton}
         </div>
     )
@@ -256,9 +283,9 @@ const Profile = (props: any) => {
  * maps redux state to props
  * @param state of the redux
  */
-const mapStateToProps = (state: authenticationState) => {
+const mapStateToProps = (state: any) => {
     return {
-        auth: state
+        auth: state.auth
     };
 };
 
@@ -289,27 +316,32 @@ export async function GetUserInformation(userId: string): Promise<User> {
     }
 }
 
-export async function UpdateUserInformation(user: User): Promise<boolean> {
+export async function UpdateUserInformation(user: User, token: string): Promise<boolean> {
+    console.log(JSON.stringify(user));
     let options: RequestInit = {
         method: "PUT",
         body: JSON.stringify(user),
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
         },
         mode: "cors",
         cache: "default"
     };
 
-    try {
+
         let response: Response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL + "/" + user.id, options);
-        return response.status === 200;
-    } catch (Exception) {
-        console.log("EXCEPTION WHEN UPDATING USER: " + JSON.stringify(user) + " Exception: " + Exception)
-        return false;
-    }
+        if(response.status === 200){
+            return true;
+        }
+        else{
+            var text = await response.text();
+            throw new Error(text);
+        }
+
 }
 
-export async function ChangePassword(userId: string, oldPassword: string, newPassword: string): Promise<boolean> {
+export async function ChangePassword(userId: string, oldPassword: string, newPassword: string, token: string): Promise<boolean> {
     let passwordModel: ChangePasswordModel = {
         OldPassword: oldPassword,
         NewPassword: newPassword
@@ -319,17 +351,22 @@ export async function ChangePassword(userId: string, oldPassword: string, newPas
         method: "PUT",
         body: JSON.stringify(passwordModel),
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
         },
+
         mode: "cors",
         cache: "default"
     };
 
-    try {
-        let response: Response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL + "/" + userId, options);
-        return response.status === 200;
-    } catch (e) {
-        console.log("CHANGEPASSWORD EXPECTION: " + e);
-        return false;
+
+    let response: Response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL + "/UpdatePassword/" + userId, options);
+    if (response.status === 200) {
+        return true;
+    } else {
+        var text =  await response.text();
+        throw new Error(text);
     }
+
+
 }
