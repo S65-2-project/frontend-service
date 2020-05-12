@@ -9,8 +9,6 @@ import {ChangePasswordModel} from "./types/ChangePasswordModel";
 
 
 const Profile = (props: any) => {
-
-
     //Boolean that indicates if the user is in edit mode or not.
     let editMode: boolean = false;
     const {id} = useParams();
@@ -66,8 +64,6 @@ const Profile = (props: any) => {
       
     let isDelegate: boolean = false; //Boolean of isDelegate
     let isDAppOwner : boolean = false; //Boolean of isDAppOwner
-
-
     /**
      * Method used for loading/reloading the userinformation
      * @param edit which indicates if the profile will be editable or notm this boolean also sets the editmode parameter.
@@ -84,13 +80,11 @@ const Profile = (props: any) => {
                     setInformationDisplay(profileUser, true, edit);
                 } else {
                     profileUser = await GetUserInformation(id);
-
                     setInformationDisplay(profileUser, false, edit);
                 }
                 isDelegate = profileUser.isDelegate;
                 isDAppOwner = profileUser.isDAppOwner
             }
-
         }
     };
 
@@ -99,15 +93,12 @@ const Profile = (props: any) => {
      */
     const saveChangesEdit = async () => {
         try {
-
             var reg = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/;
             if (!profileUser.email.match(reg)) {
                 throw new Error("Email does not match the syntax of an email")
             }else{
                 //ignore
             }
-
-
             profileUser.isDelegate = isDelegate;
             profileUser.isDAppOwner = isDAppOwner;
             if(await UpdateUserInformation(profileUser, props.auth.User.token)){
@@ -116,7 +107,6 @@ const Profile = (props: any) => {
             else{
                 //ignore
             }
-
             if(changePassword) {
                 if (changePassword && oldPassword !== "" && newPassword !== "" && repeatNewPassword !== "") {
                     if (changePassword && newPassword !== repeatNewPassword) {
@@ -133,9 +123,6 @@ const Profile = (props: any) => {
             } else{
                     //ignore
             }
-
-
-
             await initialize(false);
         }
          catch (ex) {
@@ -144,11 +131,9 @@ const Profile = (props: any) => {
         }
     };
 
-
     const onEmailChange = (event: any) => {
         profileUser.email = event.target.value;
     };
-
 
     const onChangeOldPassword = (event: any) => {
         oldPassword = event.target.value;
@@ -272,7 +257,6 @@ const Profile = (props: any) => {
             setEditButton(<div/>)
         }
     };
-
     return (
         <div>
             {succesUpdate}
@@ -285,7 +269,6 @@ const Profile = (props: any) => {
         </div>
     )
 };
-
 
 /**
  * maps redux state to props
@@ -308,7 +291,6 @@ export async function GetUserInformation(userId: string): Promise<User> {
         mode: "cors",
         cache: "default"
     };
-
     try {
         let idRequest: string = "/" + userId;
         let response: Response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL + idRequest, options);
@@ -336,8 +318,6 @@ export async function UpdateUserInformation(user: User, token: string): Promise<
         mode: "cors",
         cache: "default"
     };
-
-
         let response: Response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL + "/" + user.id, options);
         if(response.status === 200){
             return true;
@@ -346,7 +326,6 @@ export async function UpdateUserInformation(user: User, token: string): Promise<
             let text = await response.text();
             throw new Error(text);
         }
-
 }
 
 export async function ChangePassword(userId: string, oldPassword: string, newPassword: string, token: string): Promise<boolean> {
@@ -354,7 +333,6 @@ export async function ChangePassword(userId: string, oldPassword: string, newPas
         OldPassword: oldPassword,
         NewPassword: newPassword
     };
-
     let options: RequestInit = {
         method: "PUT",
         body: JSON.stringify(passwordModel),
@@ -362,12 +340,9 @@ export async function ChangePassword(userId: string, oldPassword: string, newPas
             "Content-Type": "application/json",
             "Authorization": "Bearer " + token
         },
-
         mode: "cors",
         cache: "default"
     };
-
-
     let response: Response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL + "/UpdatePassword/" + userId, options);
     if (response.status === 200) {
         return true;
@@ -375,6 +350,4 @@ export async function ChangePassword(userId: string, oldPassword: string, newPas
         var text =  await response.text();
         throw new Error(text);
     }
-
-
 }
