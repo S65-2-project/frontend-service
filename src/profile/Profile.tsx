@@ -343,7 +343,7 @@ export async function UpdateUserInformation(user: User, token: string): Promise<
             return true;
         }
         else{
-            var text = await response.text();
+            let text = await response.text();
             throw new Error(text);
         }
 
