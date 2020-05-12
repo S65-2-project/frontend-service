@@ -60,20 +60,13 @@ const Profile = (props: any) => {
     //HTML Block that lets u get out of the edit mode.
     const [cancelEditButton, setCancelEditButton] = React.useState(<div/>);
 
-    //Boolean which indicates if the user has decided to change to password.
-    let changePassword = false;
-
-    //String which has the oldPassword
-    let oldPassword: string = "";
-    //String which has the newPassword
-    let newPassword: string = "";
-    //String which has the repeatNewPassword
-    let repeatNewPassword: string = "";
-
-    //Boolean of isDelegate
-    let isDelegate: boolean = false;
-    //Boolean of isDAppOwner
-    let isDAppOwner : boolean = false;
+    let changePassword = false; //Boolean which indicates if the user has decided to change to password.
+    let oldPassword: string = ""; //String which has the oldPassword
+    let newPassword: string = ""; //String which has the newPassword
+    let repeatNewPassword: string = ""; //String which has the repeatNewPassword
+      
+    let isDelegate: boolean = false; //Boolean of isDelegate
+    let isDAppOwner : boolean = false; //Boolean of isDAppOwner
 
 
     /**
