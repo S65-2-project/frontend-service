@@ -52,6 +52,9 @@ const Profile = (props: any) => {
     //HTML block whichcontains an error if need be to display one.
     const [error, setError] = React.useState(<div/>);
 
+    //HTML Block that lets u get out of the edit mode.
+    const [cancelEditButton, setCancelEditButton] = React.useState(<div/>);
+
     //Boolean which indicates if the user has decided to change to password.
     let changePassword = false;
 
@@ -103,7 +106,7 @@ const Profile = (props: any) => {
             if (changePassword && oldPassword !== "" && newPassword !== "" && repeatNewPassword !== "") { //Passwod fields should be filled in.{
                 await ChangePassword(profileUser.id, oldPassword, newPassword, props.auth.User.token);
             }
-            else if(changePassword && newPassword === repeatNewPassword){
+            else if(changePassword && newPassword !== repeatNewPassword){
                 throw new Error("Repeat is not the same as the new password");
             }
             else {
@@ -247,10 +250,12 @@ const Profile = (props: any) => {
             setProfileInformationBlock(
                 profileInformationBlockNotEdit(user)
             );
+            setCancelEditButton(<div/>)
         } else {
             setProfileInformationBlock(
                 profileInformationBlockEditMode
             );
+            setCancelEditButton(<Button variant={"warning"} onClick={() => initialize(profileUser.id,false)}>Cancel Edit</Button>)
         }
 
         //Button that you can use if you are logged to start and save edit.
@@ -274,6 +279,7 @@ const Profile = (props: any) => {
             {profileInformationBlock}
             {passwordBlock}
             {editButton}
+            {cancelEditButton}
         </div>
     )
 };
