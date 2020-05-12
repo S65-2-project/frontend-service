@@ -10,33 +10,34 @@ import {Nav, Navbar} from "react-bootstrap";
  */
 const TopNavigation = (props: any) => {
 
-    const [loginLink,setLoginLink] = React.useState("");
+    const [loginLink, setLoginLink] = React.useState("");
     const [loginText, setLoginText] = React.useState("");
     const [registerText, setRegisterText] = React.useState(<div/>);
 
     const [profileNavigationBlock, setProfileNavigationBlock] = React.useState(<Nav.Link href={""}>Profile</Nav.Link>)
 
-    useEffect( () => {initialize()},[props.auth]);
+    useEffect(() => {
+        const initialize = () => {
+            if (props.auth.isAuthenticated) {
+                setLoginLink('/logout');
+                setLoginText('Logout');
+                setProfileNavigationBlock(
+                    <Nav.Link href={"/profile/" + props.auth.User.id}>Profile</Nav.Link>
+                );
+                setRegisterText(
+                    <div/>
+                );
+            } else {
+                setLoginLink('/login');
+                setLoginText('Login');
+                setRegisterText(
+                    <Nav.Link href='register'>Register now!</Nav.Link>
+                );
+            }
+        };
+        initialize()
+    }, [props.auth]);
 
-
-    const initialize = () => {
-        if (props.auth.isAuthenticated) {
-            setLoginLink('/logout');
-            setLoginText('Logout');
-            setProfileNavigationBlock(
-                <Nav.Link href={"/profile/" + props.auth.User.id}>Profile</Nav.Link>
-            );
-            setRegisterText(
-                <div/>
-            );
-        } else {
-            setLoginLink('/login');
-            setLoginText('Login');
-            setRegisterText(
-                <Nav.Link href='register'>Register now!</Nav.Link>
-            );
-        }
-    };
 
     return (
         <div>

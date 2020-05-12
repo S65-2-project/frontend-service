@@ -4,7 +4,6 @@ import User, {initialUserState} from "./types/user";
 import config from "../config.json"
 import {withRouter} from "react-router";
 import {connect} from "react-redux";
-import {authenticationState} from "../reducers/AuthReducer";
 import {Button, Form, Alert} from "react-bootstrap";
 import {ChangePasswordModel} from "./types/ChangePasswordModel";
 
@@ -18,8 +17,11 @@ const Profile = (props: any) => {
     /**
      * Runs when page loads in and the userId is filled in. will run again when editmode has been changed.
      */
+
     useEffect(() => {
-        initialize(id ?? "", editMode)
+
+        initialize( editMode)
+        // eslint-disable-next-line
     }, [editMode]);
 
     /**
@@ -47,7 +49,7 @@ const Profile = (props: any) => {
     //Html block which contains the fields oldpassword, newpassword, repeatnewpassword.
     const [passwordBlock, setPasswordBlock] = React.useState(<div/>);
 
-    const [deleteProfileButtonBlock, setDeleteProfileButtonBlock] = React.useState(<div/>);
+    // const [deleteProfileButtonBlock, setDeleteProfileButtonBlock] = React.useState(<div/>);
 
     //HTML block whichcontains an error if need be to display one.
     const [error, setError] = React.useState(<div/>);
@@ -75,24 +77,26 @@ const Profile = (props: any) => {
      * Method used for loading/reloading the userinformation
      * @param edit which indicates if the profile will be editable or notm this boolean also sets the editmode parameter.
      */
-    async function initialize(id: string, edit: boolean) {
-        profileId = id;
-        currentlyLoggedInUser = props.auth.User;
-        editMode = edit;
-        //checks if loggedInuser is the same as the profile you want to check, if it is then you have the option edit the profile.
-        if (currentlyLoggedInUser) {
-            if (currentlyLoggedInUser.id === profileId) {
-                profileUser = await GetUserInformation(id);
-                setInformationDisplay(profileUser, true, edit);
-            } else {
-                profileUser = await GetUserInformation(id);
+    async function initialize(edit: boolean) {
+        if (id) {
+            profileId = id;
+            currentlyLoggedInUser = props.auth.User;
+            editMode = edit;
+            //checks if loggedInuser is the same as the profile you want to check, if it is then you have the option edit the profile.
+            if (currentlyLoggedInUser) {
+                if (currentlyLoggedInUser.id === profileId) {
+                    profileUser = await GetUserInformation(id);
+                    setInformationDisplay(profileUser, true, edit);
+                } else {
+                    profileUser = await GetUserInformation(id);
 
-                setInformationDisplay(profileUser, false, edit);
+                    setInformationDisplay(profileUser, false, edit);
+                }
+                isDelegate = profileUser.isDelegate;
+                isDAppOwner = profileUser.isDAppOwner
             }
-            isDelegate = profileUser.isDelegate;
-            isDAppOwner = profileUser.isDAppOwner
-        }
 
+        }
     };
 
     /**
@@ -112,7 +116,7 @@ const Profile = (props: any) => {
             else {
 
             }
-            await initialize(profileId, false);
+            await initialize(false);
         }
          catch (ex) {
             setError(<Alert variant={"danger"} onClick={() => setError(<div/>)}>{ex.message}</Alert>)
@@ -164,31 +168,6 @@ const Profile = (props: any) => {
     };
 
     /**
-     *  Html Block that is used if you decide to edit the password.
-     */
-    const editPasswordBlock = () => {
-        return (
-            <Form>
-                <Form.Group>
-                    <Form.Label>Old password</Form.Label>
-                    <Form.Control type="password" placeholder="enter old password" onChange={onChangeOldPassword}/>
-                </Form.Group>
-
-                <Form.Group>
-                    <Form.Label>New password</Form.Label>
-                    <Form.Control type="password" placeholder="enter new password" onChange={onChangeNewPassword}/>
-                </Form.Group>
-
-                <Form.Group>
-                    <Form.Label>Repeat new password</Form.Label>
-                    <Form.Control type="password" placeholder="repeat new password"
-                                  onChange={onChangeNewRepeatPassword}/>
-                </Form.Group>
-            </Form>
-        )
-    };
-
-    /**
      * Html Block that is used when just viewing a profile.
      * @param user which contains display information.
      */
@@ -233,7 +212,7 @@ const Profile = (props: any) => {
                     <Form.Group controlId="formBasicCheckbox">
                         <Form.Check type="checkbox" label="changePassword" onChange={setChangePasswordBlock}/>
                     </Form.Group>
-                    {deleteProfileButtonBlock}
+                    {/*{deleteProfileButtonBlock}*/}
                 </form>
             </div>
         )
@@ -255,13 +234,13 @@ const Profile = (props: any) => {
             setProfileInformationBlock(
                 profileInformationBlockEditMode
             );
-            setCancelEditButton(<Button variant={"warning"} onClick={() => initialize(profileUser.id,false)}>Cancel Edit</Button>)
+            setCancelEditButton(<Button variant={"warning"} onClick={() => initialize(false)}>Cancel Edit</Button>)
         }
 
         //Button that you can use if you are logged to start and save edit.
         if (loggedIn && !edit) { //If logged in but not in edit mode
             setEditButton(<Button onClick={() => {
-                initialize(profileId, true);
+                initialize(true);
             }}>Edit</Button>);
             //setDeleteProfileButtonBlock()//TODO set to empty <div/>
 
