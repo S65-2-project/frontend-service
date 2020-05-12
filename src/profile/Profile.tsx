@@ -49,7 +49,6 @@ const Profile = (props: any) => {
     //Html block which contains the fields oldpassword, newpassword, repeatnewpassword.
     const [passwordBlock, setPasswordBlock] = React.useState(<div/>);
 
-    // const [deleteProfileButtonBlock, setDeleteProfileButtonBlock] = React.useState(<div/>);
 
     //HTML block whichcontains an error if need be to display one.
     const [error, setError] = React.useState(<div/>);
