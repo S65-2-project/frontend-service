@@ -1,5 +1,5 @@
 {
   "SERVICES":{
-    "ACCOUNT_SERVICE_URL": "http://localhost:5000/Account"
+    "ACCOUNT_SERVICE_URL": "https://localhost:5001/Account"
   }
 }
