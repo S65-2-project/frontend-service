@@ -5,7 +5,7 @@ import React from 'react';
  * @constructor
  */
 const Home = () => (
-    <div><h1>#stayhome</h1></div>
+    <div><h1>Welcome to the Lisk Marketplace WIP</h1></div>
 );
 
 export default Home
