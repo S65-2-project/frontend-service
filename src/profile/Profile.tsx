@@ -1,12 +1,36 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {useParams} from "react-router-dom";
 import User, {initialUserState} from "./types/user";
 import config from "../config.json"
 import {withRouter} from "react-router";
 import {connect} from "react-redux";
-import {Button, Form, Alert, Modal} from "react-bootstrap";
+import {Alert, Button, Form, Modal} from "react-bootstrap";
 import {ChangePasswordModel} from "./types/ChangePasswordModel";
 
+/**
+ * Dialogue to show
+ * @param props
+ * @constructor
+ */
+const Dialogue = (props: any) => {
+    return (
+        <Modal
+            {...props} aria-labelledby="contained-modal-title-vcenter" centered>
+
+            <Modal.Header
+                closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">Weet je zeker dat je je account wil
+                    verwijderen?</Modal.Title> </Modal.Header>
+            <Modal.Body>
+                <Button variant="secondary" onClick={props.handleClose}>
+                    Nee
+                </Button>
+                <Button variant="primary" onClick={props.deleteAccount}>
+                    Ja
+                </Button>
+            </Modal.Body>
+        </Modal>);
+};
 
 const Profile = (props: any) => {
     //Boolean that indicates if the user is in edit mode or not.
@@ -59,6 +83,10 @@ const Profile = (props: any) => {
 
     //HTML BLock that lets you delete your account.
     const [deleteAccountButton, setDeleteAccountButton] = React.useState(<div/>);
+    const [showModal, setShowModal] = React.useState(false);
+
+    const handleClose = () => setShowModal(false);
+    const handleShow = () => setShowModal(true);
 
     let changePassword = false; //Boolean which indicates if the user has decided to change to password.
     let oldPassword: string = ""; //String which has the oldPassword
@@ -134,13 +162,20 @@ const Profile = (props: any) => {
         }
     };
 
+    /**
+     * Handles the deletion of the account.
+     */
     const deleteAccount = async () => {
-        try {
-            await DeleteAccount(profileId, props.auth.User.token)
-            props.history.push("/logout");
-        } catch (ex) {
-            setError(<Alert variant={"danger"} onClick={() => setError(<div/>)}>{ex.message}</Alert>)
-            return;
+        if (id) {
+            try {
+                setShowModal(false)
+                await DeleteAccount(id, props.auth.User.token)
+                props.history.push("/logout");
+            } catch (ex) {
+                setError(<Alert variant={"danger"} onClick={() => setError(<div/>)}>{ex.message}</Alert>)
+                console.log(JSON.stringify(ex))
+                return;
+            }
         }
     }
 
@@ -269,9 +304,7 @@ const Profile = (props: any) => {
         } else if (edit && loggedIn) {//If logged in and in edit mode
             setEditButton(<Button onClick={saveChangesEdit}>Save changes</Button>)
 
-
-            setDeleteAccountButton(<Button variant={"danger"} onClick={deleteAccount}> Delete Account</Button>)//setDeleteProfileButtonBlock()
-
+            setDeleteAccountButton(<Button variant={"danger"} onClick={handleShow}>Delete Account</Button>)//setDeleteProfileButtonBlock()
         } else {
             setEditButton(<div/>)
         }
@@ -286,6 +319,8 @@ const Profile = (props: any) => {
             {editButton}
             {cancelEditButton}
             {deleteAccountButton}
+            <Dialogue show={showModal} deleteAccount={deleteAccount} handleClose={handleClose}
+                      onHide={() => setShowModal(false)}/>
         </div>
     )
 };
