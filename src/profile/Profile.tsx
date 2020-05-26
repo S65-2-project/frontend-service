@@ -100,7 +100,7 @@ const Profile = (props: any) => {
      * Method used for loading/reloading the userInformation
      * @param edit which indicates if the profile will be editable or not this boolean also sets the editMode parameter.
      */
-    async function initialize(edit: boolean) {
+    const initialize = async (edit: boolean) => {
         if (id) {
             profileId = id;
             currentlyLoggedInUser = props.auth.User;
@@ -173,7 +173,6 @@ const Profile = (props: any) => {
                 props.history.push("/logout");
             } catch (ex) {
                 setError(<Alert variant={"danger"} onClick={() => setError(<div/>)}>{ex.message}</Alert>)
-                console.log(JSON.stringify(ex))
                 return;
             }
         }
@@ -337,7 +336,7 @@ const mapStateToProps = (state: any) => {
 
 export default withRouter(connect(mapStateToProps)(Profile));
 
-export async function GetUserInformation(userId: string): Promise<User> {
+const GetUserInformation = async (userId: string): Promise<User> =>{
     let options: RequestInit = {
         method: "GET",
         headers: {
@@ -361,8 +360,7 @@ export async function GetUserInformation(userId: string): Promise<User> {
     }
 }
 
-export async function UpdateUserInformation(user: User, token: string): Promise<boolean> {
-    console.log(JSON.stringify(user));
+const UpdateUserInformation = async (user: User, token: string): Promise<boolean> => {
     let options: RequestInit = {
         method: "PUT",
         body: JSON.stringify(user),
@@ -382,7 +380,7 @@ export async function UpdateUserInformation(user: User, token: string): Promise<
     }
 }
 
-export async function DeleteAccount(userId: string, token: string): Promise<boolean> {
+const DeleteAccount = async(userId: string, token: string): Promise<boolean> => {
     let options: RequestInit = {
         method: "DELETE",
         headers: {
@@ -401,7 +399,7 @@ export async function DeleteAccount(userId: string, token: string): Promise<bool
     }
 }
 
-export async function ChangePassword(userId: string, oldPassword: string, newPassword: string, token: string): Promise<boolean> {
+const ChangePassword = async (userId: string, oldPassword: string, newPassword: string, token: string): Promise<boolean> => {
     let passwordModel: ChangePasswordModel = {
         OldPassword: oldPassword,
         NewPassword: newPassword
