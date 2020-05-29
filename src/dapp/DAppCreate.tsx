@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {     withRouter} from "react-router";
+import {withRouter} from "react-router";
 import {connect} from "react-redux";
 import {Button, Form} from "react-bootstrap";
 import {CreateDAppOfferModel, initCreateOffer} from "./types/CreateDAppOfferModel";
@@ -12,8 +12,8 @@ const DAppCreate = (props: any) => {
         event.preventDefault();
         event.stopPropagation();
         try{
-            await createDappOffer(createModel);
-           //TODO history.push
+            var obj = await createDappOffer(createModel);
+           props.history.push("/dappoffer/"+obj.Id);
         }
         catch(er){
             addError(er);
