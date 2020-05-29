@@ -10,6 +10,7 @@ import {Provider} from "react-redux";
 import store from "./store";
 import {BrowserRouter as Router} from "react-router-dom";
 import Profile from "./profile/Profile";
+import DAppCreate from "./dapp/DAppCreate";
 
 const App = () => (
     <div>
@@ -23,6 +24,7 @@ const App = () => (
                         <Route path='/register' component={Register}/>
                         <Route path='/logout' component={Logout}/>
                         <Route exact path='/' component={Home}/>
+                        <Route path='/createdapp' component={DAppCreate}/>
                     </Switch>
                 </main>
             </Router>
