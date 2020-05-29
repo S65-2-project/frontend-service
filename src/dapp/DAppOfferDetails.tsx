@@ -2,8 +2,7 @@ import React, {useEffect} from "react";
 import {DAppOffer, User} from './types/DAppOffer';
 import config from "../config.json";
 import {useParams, withRouter} from "react-router";
-import {Alert, Col, Form, ListGroup, Row} from "react-bootstrap";
-import {string} from "prop-types";
+import {Alert, Form, ListGroup} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import {connect} from "react-redux";
 
@@ -26,7 +25,6 @@ export const DAppOfferDetails = (props: any) => {
                 mode: "cors",
                 cache: "default"
             };
-            console.log(id);
             let idRequest: string = "/"+id;
             let response: Response = await fetch(config.SERVICES.DAppOfferGet+idRequest, options);
             let body = await response.text();
