@@ -1,11 +1,10 @@
 import React, {useEffect} from 'react';
-import {Redirect, withRouter} from "react-router";
+import {     withRouter} from "react-router";
 import {connect} from "react-redux";
 import {Button, Form} from "react-bootstrap";
 import {CreateDAppOfferModel, initCreateOffer} from "./types/CreateDAppOfferModel";
 import {Alert} from 'react-bootstrap';
 import {createDappOffer} from "./functions/create-dappoffer";
-import Home from "../components/Home";
 
 const DAppCreate = (props: any) => {
     const createModel : CreateDAppOfferModel = initCreateOffer;
@@ -13,7 +12,7 @@ const DAppCreate = (props: any) => {
         event.preventDefault();
         event.stopPropagation();
         try{
-           var obj = await createDappOffer(createModel);
+            await createDappOffer(createModel);
            //TODO history.push
         }
         catch(er){
