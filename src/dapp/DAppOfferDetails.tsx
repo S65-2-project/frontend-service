@@ -17,34 +17,21 @@ export const DAppOfferDetails = (props: any) => {
 
     useEffect(() => {
         const getInformation = async (id: string): Promise<DAppOffer> => {
-            let temporary: DAppOffer = {
-                provider: {id: "", name: "provider person"},
-                id: id,
-                dateStart: "now",
-                dateEnd: "another day",
-                delegatesNeededForOffer: 6,
-                liskPerMonth: 3,
-                lengthOfOfferInMonths: 4,
-                description: "ed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia co",
-                delegatesCurrentlyInOffer: [{id: "asdas", name: "someone"}],
-                region: "Europe"
-
-            };
-            return temporary;
-
             let options: RequestInit = {
                 method: "GET",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin" : "http:localhost:3000"
                 },
                 mode: "cors",
                 cache: "default"
             };
-
-            let idRequest: string = "/" + id;
-            let response: Response = await fetch(config.SERVICES.ACCOUNT_SERVICE_URL + idRequest, options);
+            console.log(id);
+            let idRequest: string = "/"+id;
+            let response: Response = await fetch(config.SERVICES.DAppOfferGet+idRequest, options);
             let body = await response.text();
             if (response.status === 200) {
+                console.log(body)
                 return JSON.parse(body); //returns type DAppOffer if backend is consistent.
             } else {
                 throw new Error(body);
@@ -79,7 +66,7 @@ export const DAppOfferDetails = (props: any) => {
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>You will need to be available is
-                                for <strong>{details.lengthOfOfferInMonths}</strong> months.</Form.Label>
+                                for <strong>{details.offerLengthInMonths}</strong> months.</Form.Label>
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>Reward will be <strong>{details.liskPerMonth}</strong> Lisk a month.</Form.Label>

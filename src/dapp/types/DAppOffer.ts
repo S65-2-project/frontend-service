@@ -9,11 +9,11 @@ export interface DAppOffer{
     id : string,
     provider : User,
     description : string,
-    lengthOfOfferInMonths : number,
+    offerLengthInMonths : number,
     liskPerMonth: number,
     delegatesNeededForOffer : number,
     delegatesCurrentlyInOffer: User[],
-    dateStart : string,
-    dateEnd: string,
+    dateStart : any,
+    dateEnd: any,
     region : string
 }
