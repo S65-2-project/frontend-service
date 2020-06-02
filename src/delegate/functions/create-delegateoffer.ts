@@ -1,8 +1,8 @@
+import {CreateDelegateOfferModel} from "../types/CreateDelegateOfferModel";
+import {DelegateOffer} from "../types/DelegateOffer";
 import config from "../../config.json";
-import {CreateDAppOfferModel} from "../types/CreateDAppOfferModel";
-import {DAppOffer} from "../types/DAppOffer";
 
-export async function createDappOffer(model : CreateDAppOfferModel) : Promise<DAppOffer>{
+export async function createDappOffer(model : CreateDelegateOfferModel) : Promise<DelegateOffer>{
     let options: RequestInit = {
         method: 'POST',
         headers: {
@@ -10,7 +10,7 @@ export async function createDappOffer(model : CreateDAppOfferModel) : Promise<DA
         },
         body: JSON.stringify(model)
     };
-    let response = await fetch(config.SERVICES.DApp, options);
+    let response = await fetch(config.SERVICES.DELEGATE, options);
 
     let body = await response.text();
 

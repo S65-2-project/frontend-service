@@ -15,7 +15,7 @@ export interface CreateDAppOfferModel {
     DateEnd: string
 }
 
-export const initCreateOffer : CreateDAppOfferModel ={
+export const initDAppCreateOffer : CreateDAppOfferModel ={
     Title: "",
     Provider: {Id: "", Name: ""},
     Description: "",

@@ -2,13 +2,13 @@ import React, {useEffect} from 'react';
 import {withRouter} from "react-router";
 import {connect} from "react-redux";
 import {Button, Form} from "react-bootstrap";
-import {CreateDAppOfferModel, initCreateOffer} from "./types/CreateDAppOfferModel";
+import {CreateDAppOfferModel, initDAppCreateOffer} from "./types/CreateDAppOfferModel";
 import {Alert} from 'react-bootstrap';
 import {createDappOffer} from "./functions/create-dappoffer";
 
 const DAppCreate = (props: any) => {
-    const createModel : CreateDAppOfferModel = initCreateOffer;
-    const CreateDelegate = async (event : any) => {
+    const createModel : CreateDAppOfferModel = initDAppCreateOffer;
+    const CreateDApp = async (event : any) => {
         event.preventDefault();
         event.stopPropagation();
         try{
@@ -19,21 +19,18 @@ const DAppCreate = (props: any) => {
             addError(er);
         }
     };
-    const [error, setError] = React.useState([<div/>]);
+    const [error, setError] = React.useState(<div/>);
     const addError = async (er: any) =>{
-        var curlist = error;
-        var index = curlist.length;
         var newerror = <Alert variant={"warning"} onClick={
             () => {
-            error[index+1] = <div/>;
+            setError(<div/>);
         }}>{er.message}</Alert>;
-        setError(curlist.concat(newerror));
     };
     //eslint
     useEffect(() => {createModel.Provider = {Id : props.auth.User.id, Name :props.auth.User.email}});//onmount fill in provider
 
     const createHtmlBlock =
-        <Form className={"form-container"} onSubmit={CreateDelegate}>
+        <Form className={"form-container"} onSubmit={CreateDApp}>
             <Form.Group controlId="Title">
                 <Form.Label>Title</Form.Label>
                 <Form.Control type="text" placeholder="Title" onChange={
@@ -98,7 +95,7 @@ const DAppCreate = (props: any) => {
                     }
                 }/>
             </Form.Group>
-            <Button type={"submit"} variant="primary" onClick={CreateDelegate}>
+            <Button type={"submit"} variant="primary" onClick={CreateDApp}>
                 Create DApp Offer
             </Button>
         </Form>;
