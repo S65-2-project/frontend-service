@@ -62,7 +62,6 @@ const DAppCreate = (props: any) => {
                 <Form.Label>How long the contract will last in months</Form.Label>
                 <Form.Control type="number" placeholder="please enter a number..." onChange={
                     (event: any) => {
-                        console.log(event.target.value);
                         createModel.OfferLengthInMonths = parseInt(event.target.value)
                     }
                 }/>
