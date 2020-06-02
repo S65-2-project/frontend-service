@@ -1,16 +1,15 @@
+import {UpdateDAppOfferModel} from "../types/UpdateDAppOfferModel";
 import config from "../../config.json";
-import {CreateDAppOfferModel} from "../types/CreateDAppOfferModel";
-import {DAppOffer} from "../types/DAppOffer";
 
-export async function createDappOffer(model : CreateDAppOfferModel) : Promise<DAppOffer>{
+export async function UpdateDAppOffer(id: any,model : UpdateDAppOfferModel) : Promise<UpdateDAppOfferModel>{
     let options: RequestInit = {
-        method: 'POST',
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(model)
     };
-    let response = await fetch(config.SERVICES.DApp, options);
+    let response = await fetch(config.SERVICES.DApp+"/"+id, options);
 
     let body = await response.text();
 

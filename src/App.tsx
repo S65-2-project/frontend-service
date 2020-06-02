@@ -13,6 +13,7 @@ import Profile from "./profile/Profile";
 import DAppCreate from "./dapp/DAppCreate";
 import DelegateCreate from "./delegate/DelegateCreate";
 import DelegateUpdate from "./delegate/DelegateUpdate";
+import DAppUpdate from "./dapp/DAppUpdate";
 
 const App = () => (
     <div>
@@ -29,6 +30,7 @@ const App = () => (
                         <Route path='/create-dapp' component={DAppCreate}/>
                         <Route path='/create-delegate' component={DelegateCreate}/>
                         <Route path='/update-delegate/:id' component={DelegateUpdate}/>
+                        <Route path='/update-dapp/:id' component={DAppUpdate}/>
                     </Switch>
                 </main>
             </Router>

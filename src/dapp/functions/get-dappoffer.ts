@@ -1,16 +1,13 @@
 import config from "../../config.json";
-import {CreateDAppOfferModel} from "../types/CreateDAppOfferModel";
-import {DAppOffer} from "../types/DAppOffer";
-
-export async function createDappOffer(model : CreateDAppOfferModel) : Promise<DAppOffer>{
+import {DAppResponses} from "../types/DAppResponses";
+export async function GetDAppOffer (id:any) : Promise<DAppResponses>{
     let options: RequestInit = {
-        method: 'POST',
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(model)
     };
-    let response = await fetch(config.SERVICES.DApp, options);
+    let response = await fetch(config.SERVICES.DApp+"/"+id, options);
 
     let body = await response.text();
 
