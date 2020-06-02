@@ -12,6 +12,7 @@ import {BrowserRouter as Router} from "react-router-dom";
 import Profile from "./profile/Profile";
 import DAppCreate from "./dapp/DAppCreate";
 import DelegateCreate from "./delegate/DelegateCreate";
+import DelegateUpdate from "./delegate/DelegateUpdate";
 
 const App = () => (
     <div>
@@ -27,6 +28,7 @@ const App = () => (
                         <Route exact path='/' component={Home}/>
                         <Route path='/create-dapp' component={DAppCreate}/>
                         <Route path='/create-delegate' component={DelegateCreate}/>
+                        <Route path='/update-delegate/:id' component={DelegateUpdate}/>
                     </Switch>
                 </main>
             </Router>

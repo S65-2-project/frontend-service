@@ -13,7 +13,7 @@ const DelegateCreate = (props: any) =>{
         event.preventDefault();
         event.stopPropagation();
         try{
-            var obj = await createDelegateOffer(createModel);
+            await createDelegateOffer(createModel);
             props.history.push("/dapp-overview")
         }
         catch(er){

@@ -1,16 +1,15 @@
 import config from "../../config.json";
-import {CreateDAppOfferModel} from "../types/CreateDAppOfferModel";
-import {DAppOffer} from "../types/DAppOffer";
+import {UpdateDelegateOfferModel} from "../types/UpdateDelegateOfferModel";
 
-export async function createDappOffer(model : CreateDAppOfferModel) : Promise<DAppOffer>{
+export async function UpdateDelegateOffer(id: any, model: UpdateDelegateOfferModel){
     let options: RequestInit = {
-        method: 'POST',
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(model)
     };
-    let response = await fetch(config.SERVICES.DAPP, options);
+    let response = await fetch(config.SERVICES.DELEGATE+"/"+id, options);
 
     let body = await response.text();
 
@@ -23,4 +22,4 @@ export async function createDappOffer(model : CreateDAppOfferModel) : Promise<DA
     else{//strange things happend.
         throw new Error("Unknown error occurred");
     }
-}
+};
