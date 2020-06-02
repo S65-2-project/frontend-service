@@ -2,7 +2,7 @@ import {CreateDelegateOfferModel} from "../types/CreateDelegateOfferModel";
 import {DelegateOffer} from "../types/DelegateOffer";
 import config from "../../config.json";
 
-export async function createDappOffer(model : CreateDelegateOfferModel) : Promise<DelegateOffer>{
+export async function createDelegateOffer(model : CreateDelegateOfferModel) : Promise<DelegateOffer>{
     let options: RequestInit = {
         method: 'POST',
         headers: {

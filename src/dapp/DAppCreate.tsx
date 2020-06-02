@@ -21,10 +21,10 @@ const DAppCreate = (props: any) => {
     };
     const [error, setError] = React.useState(<div/>);
     const addError = async (er: any) =>{
-        var newerror = <Alert variant={"warning"} onClick={
+        setError(<Alert variant={"warning"} onClick={
             () => {
             setError(<div/>);
-        }}>{er.message}</Alert>;
+        }}>{er.message}</Alert>);
     };
     //eslint
     useEffect(() => {createModel.Provider = {Id : props.auth.User.id, Name :props.auth.User.email}});//onmount fill in provider

@@ -11,6 +11,7 @@ import store from "./store";
 import {BrowserRouter as Router} from "react-router-dom";
 import Profile from "./profile/Profile";
 import DAppCreate from "./dapp/DAppCreate";
+import DelegateCreate from "./delegate/DelegateCreate";
 
 const App = () => (
     <div>
@@ -24,7 +25,8 @@ const App = () => (
                         <Route path='/register' component={Register}/>
                         <Route path='/logout' component={Logout}/>
                         <Route exact path='/' component={Home}/>
-                        <Route path='/createdapp' component={DAppCreate}/>
+                        <Route path='/create-dapp' component={DAppCreate}/>
+                        <Route path='/create-delegate' component={DelegateCreate}/>
                     </Switch>
                 </main>
             </Router>
