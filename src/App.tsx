@@ -10,6 +10,7 @@ import {Provider} from "react-redux";
 import store from "./store";
 import {BrowserRouter as Router} from "react-router-dom";
 import Profile from "./profile/Profile";
+import DAppOfferDetails from "./dapp/DAppOfferDetails";
 
 const App = () => (
     <div>
@@ -19,6 +20,7 @@ const App = () => (
                 <main role="main" className="container">
                     <Switch>
                         <Route path='/profile/:id'>{Profile}</Route>
+                        <Route path='/dappoffer/:id'>{DAppOfferDetails}</Route>
                         <Route path='/login' component={Login}/>
                         <Route path='/register' component={Register}/>
                         <Route path='/logout' component={Logout}/>
