@@ -95,7 +95,7 @@ const Profile = (props: any) => {
         try {
             var reg = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/;
             if (!profileUser.email.match(reg)) {
-                throw new Error("Email does not match the syntax of an email")
+                throw new Error("email does not match the syntax of an email")
             }else{
                 //ignore
             }
