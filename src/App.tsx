@@ -14,6 +14,7 @@ import DAppCreate from "./dapp/DAppCreate";
 import DelegateCreate from "./delegate/DelegateCreate";
 import DelegateUpdate from "./delegate/DelegateUpdate";
 import DAppUpdate from "./dapp/DAppUpdate";
+import DAppOfferDetails from "./dapp/DAppOfferDetails";
 
 const App = () => (
     <div>
@@ -23,6 +24,7 @@ const App = () => (
                 <main role="main" className="container">
                     <Switch>
                         <Route path='/profile/:id'>{Profile}</Route>
+                        <Route path='/dappoffer/:id'>{DAppOfferDetails}</Route>
                         <Route path='/login' component={Login}/>
                         <Route path='/register' component={Register}/>
                         <Route path='/logout' component={Logout}/>
