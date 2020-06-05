@@ -39,7 +39,6 @@ const TopNavigation = (props: any) => {
         initialize()
     }, [props.auth]);
 
-
     return (
         <div>
             <Navbar bg="dark" variant="dark">
