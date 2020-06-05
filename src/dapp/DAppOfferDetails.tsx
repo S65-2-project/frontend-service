@@ -126,7 +126,7 @@ export const DAppOfferDetails = (props: any) => {
         }
 
 
-    }, [id]);
+    }, [id, props.history]);
 
     return (
         <div>
