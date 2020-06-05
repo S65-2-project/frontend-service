@@ -21,7 +21,6 @@ export const DAppOfferDetails = (props: any) => {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin" : "http:localhost:3000"
                 },
                 mode: "cors",
                 cache: "default"
@@ -30,16 +29,15 @@ export const DAppOfferDetails = (props: any) => {
             let response: Response = await fetch(config.SERVICES.DAPP+idRequest, options);
             let body = await response.text();
             if (response.status === 200) {
-                console.log(body)
                 return JSON.parse(body); //returns type DAppOffer if backend is consistent.
             } else {
                 throw new Error(body);
             }
+
         };
 
         const loadHtml = async (id: string) => {
             try {
-
                 let details: DAppOffer = await getInformation(id);
                 const participants = details.DelegatesCurrentlyInOffer.map(
                     (delegate: User) =>
