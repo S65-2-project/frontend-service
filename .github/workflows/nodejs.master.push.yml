@@ -4,6 +4,13 @@ on:
   push:
     branches: [master]
 
+env:
+  DOCKER_ORGANIZATION: s652
+  DOCKER_REPOSITORY: frontend-service
+  GKE_CLUSTER: s65-2
+  GKE_ZONE: europe-west4-a
+  GKE_NAMESPACE: s65-2
+
 jobs:
   build:
     # The virtual machine that will be used on GitHub
@@ -12,13 +19,14 @@ jobs:
     # Run the steps in a Docker container on the virtual machine
     container:
       image: node:12.16.2
+    
     steps:
       # Checkout Git repository
       - uses: actions/checkout@v2
       
       # Decrypt the GPG encrypted config files
       - name: Decrypt the GPG encrypted config files
-        run: gpg --quiet --batch --yes --passphrase="${{ secrets.GPG_PASSPHRASE }}" --output ./src/config.json --decrypt ./src/config.json.gpg
+        run: gpg --quiet --batch --yes --passphrase ${{ secrets.GPG_PASSPHRASE }}" --output ./src/config.json --decrypt ./src/config.json.gpg
 
       # Install the dependencies needed for the project
       - name: Install dependencies
@@ -40,11 +48,13 @@ jobs:
         with:
           name: release-artifact
           path: ./build
+      
       - name: Upload Dockerfile artifact
         uses: actions/upload-artifact@v1
         with:
           name: dockerfile-artifact
           path: ./Dockerfile
+  
   deliver:
     needs: build
     runs-on: ubuntu-18.04
@@ -60,14 +70,54 @@ jobs:
         with:
           name: dockerfile-artifact
           path: .
-
+      
+      # Get the tag version 
+      - name: Get tag version
+        id: get_tag_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+      
       # Deliver Docker image to DockerHub
       - name: Deliver Docker image
-        env:
-          CONTAINER_IMAGE: ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
-          CONTAINER_IMAGE_LATEST: ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.REPOSITORY_NAME }}:latest
         run: |
           docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_ACCESS_TOKEN }}
-          docker build -t $CONTAINER_IMAGE -t $CONTAINER_IMAGE_LATEST .
-          docker push $CONTAINER_IMAGE
-          docker push $CONTAINER_IMAGE_LATEST
+          docker build -t ${{ env.DOCKER_ORGANIZATION }}/${{ env.DOCKER_REPOSITORY }}:${{ steps.get_tag_version.outputs.VERSION }} .
+          docker push ${{ env.DOCKER_ORGANIZATION }}/${{ env.DOCKER_REPOSITORY }}:${{ steps.get_tag_version.outputs.VERSION }}
+  
+  deploy:
+    needs: deliver
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Download Kubernetes artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: kubernetes-artifact
+          path: ./kube
+      
+      # Get the tag version 
+      - name: Get tag version
+        id: get_tag_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+
+      # Setup connection with the gcloud CLI
+      - name: Setup gcloud CLI
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: '290.0.1'
+          project_id: ${{ secrets.GKE_PROJECT }}
+          service_account_key: ${{ secrets.GKE_SA_KEY }}
+
+      # Get GKE cluster credentials
+      - name: Get GKE cluster credentials
+        run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
+
+      # Deploy to GKE cluster
+      - name: Deploy to GKE clusters
+        run: |
+          kubectl apply \
+            -f ./kube/autoscaler.yaml \
+            -f ./kube/deployment.yaml \
+            -f ./kube/ingress.yaml \
+            -f ./kube/service.yaml
+          kubectl set image Deployment/${{ env.DOCKER_REPOSITORY }} --namespace ${{ env.GKE_NAMESPACE }} ${{ env.DOCKER_REPOSITORY }}=${{ env.DOCKER_ORGANIZATION }}/${{ env.DOCKER_REPOSITORY }}:${{ steps.get_tag_version.outputs.VERSION }}
+          kubectl rollout status Deployment/${{ env.DOCKER_REPOSITORY }} --namespace ${{ env.GKE_NAMESPACE }}
+          kubectl get services -o wide
