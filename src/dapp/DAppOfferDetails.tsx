@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import {DAppOffer, User} from './types/DAppOffer';
 import config from "../config.json";
 import {useParams, withRouter} from "react-router";
-import {Alert, Form, ListGroup} from "react-bootstrap";
+import {Alert, Button, Form, ListGroup} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import {connect} from "react-redux";
 
@@ -20,19 +20,51 @@ export const DAppOfferDetails = (props: any) => {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin" : "http:localhost:3000"
                 },
                 mode: "cors",
                 cache: "default"
             };
             let idRequest: string = "/"+id;
-            let response: Response = await fetch(config.SERVICES.DAppOfferGet+idRequest, options);
+            let response: Response = await fetch(config.SERVICES.DApp+idRequest, options);
             let body = await response.text();
             if (response.status === 200) {
                 console.log(body)
                 return JSON.parse(body); //returns type DAppOffer if backend is consistent.
             } else {
                 throw new Error(body);
+            }
+        };
+
+        const deleteOffer = async (id: string) => {
+            if(id) {
+                try {
+                    await DeleteOffer(id)
+                    props.history.push("/dappoffer")
+                }
+                catch (e) {
+                    setError(<Alert variant={"danger"} onClick={() => setError(<div/>)}>{e.message}</Alert>)
+                    return;
+                }
+            }
+        }
+
+        const DeleteOffer  = async (id: string): Promise<boolean> => {
+            let options: RequestInit = {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                mode: "cors",
+                cache: "default"
+                }
+            let idRequest: string = "/"+id;
+            let response: Response = await fetch(config.SERVICES.DApp+idRequest, options);
+            if (response.status === 200) {
+
+                return true;
+            } else {
+                let text = await response.text();
+                throw new Error(text);
             }
         };
 
@@ -49,7 +81,6 @@ export const DAppOfferDetails = (props: any) => {
                         </ListGroup.Item>
                 );
                 let participantBlock = <ListGroup>{participants}</ListGroup>;
-
 
                 setInformation(
                     <Form>
@@ -84,13 +115,12 @@ export const DAppOfferDetails = (props: any) => {
                         <Form.Group>
                             <Form.Label>Date end : <strong>{details.dateEnd}</strong> </Form.Label>
                         </Form.Group>
+                        <Button onClick={() => deleteOffer(id)}>Delete</Button>
                     </Form>
                 )
             } catch (e) {
                 setError(<Alert variant={"warning"} onClick={() => setError(<div/>)}>{e.message}</Alert>)
             }
-
-
         };
         if (id) {
             loadHtml(id)
