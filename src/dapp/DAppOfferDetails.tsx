@@ -59,7 +59,7 @@ export const DAppOfferDetails = (props: any) => {
                 cache: "default"
             }
             let idRequest: string = "/"+id;
-            let response: Response = await fetch(config.SERVICES.DApp+idRequest, options);
+            let response: Response = await fetch(config.SERVICES.DAPP+idRequest, options);
             if (response.status === 200) {
 
                 return true;
