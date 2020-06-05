@@ -2,7 +2,11 @@ import React, {useEffect} from "react";
 import {DAppOffer, User} from './types/DAppOffer';
 import config from "../config.json";
 import {useParams, withRouter} from "react-router";
+<<<<<<< HEAD
 import {Alert, Button, Form, ListGroup} from "react-bootstrap";
+=======
+import {Alert, Form, ListGroup} from "react-bootstrap";
+>>>>>>> develop
 import {Link} from "react-router-dom";
 import {connect} from "react-redux";
 
@@ -20,12 +24,20 @@ export const DAppOfferDetails = (props: any) => {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
+<<<<<<< HEAD
+=======
+                    "Access-Control-Allow-Origin" : "http:localhost:3000"
+>>>>>>> develop
                 },
                 mode: "cors",
                 cache: "default"
             };
             let idRequest: string = "/"+id;
+<<<<<<< HEAD
             let response: Response = await fetch(config.SERVICES.DApp+idRequest, options);
+=======
+            let response: Response = await fetch(config.SERVICES.DAppOfferGet+idRequest, options);
+>>>>>>> develop
             let body = await response.text();
             if (response.status === 200) {
                 console.log(body)
@@ -35,6 +47,7 @@ export const DAppOfferDetails = (props: any) => {
             }
         };
 
+<<<<<<< HEAD
         const deleteOffer = async (id: string) => {
             if(id) {
                 try {
@@ -68,6 +81,8 @@ export const DAppOfferDetails = (props: any) => {
             }
         };
 
+=======
+>>>>>>> develop
         const loadHtml = async (id: string) => {
             try {
 
@@ -82,6 +97,10 @@ export const DAppOfferDetails = (props: any) => {
                 );
                 let participantBlock = <ListGroup>{participants}</ListGroup>;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
                 setInformation(
                     <Form>
                         <h3><Form.Group>
@@ -115,12 +134,20 @@ export const DAppOfferDetails = (props: any) => {
                         <Form.Group>
                             <Form.Label>Date end : <strong>{details.dateEnd}</strong> </Form.Label>
                         </Form.Group>
+<<<<<<< HEAD
                         <Button onClick={() => deleteOffer(id)}>Delete</Button>
+=======
+>>>>>>> develop
                     </Form>
                 )
             } catch (e) {
                 setError(<Alert variant={"warning"} onClick={() => setError(<div/>)}>{e.message}</Alert>)
             }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> develop
         };
         if (id) {
             loadHtml(id)
