@@ -1,4 +1,4 @@
-name: Node.js push on master branch
+name: Node.js push on tag
 
 on:
   push:
@@ -55,6 +55,12 @@ jobs:
         with:
           name: dockerfile-artifact
           path: ./Dockerfile
+
+      - name: Upload Kubernetes artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: kubernetes-artifact
+          path: ./kube
   
   deliver:
     needs: build
