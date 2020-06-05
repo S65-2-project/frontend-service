@@ -128,7 +128,7 @@ const DAppUpdate = (props: any)=>{
                     DateEnd : result.dateEnd,
                     DateStart : result.dateStart
                 };
-                console.log(updatemodel);
+                // eslint-disable-next-line
                 updateModel = updatemodel;
                 initializeHtmlBlock(updatemodel);
             } catch (Error) {

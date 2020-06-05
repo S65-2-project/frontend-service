@@ -10,7 +10,7 @@ export async function createDappOffer(model : CreateDAppOfferModel) : Promise<DA
         },
         body: JSON.stringify(model)
     };
-    let response = await fetch(config.SERVICES.DApp, options);
+    let response = await fetch(config.SERVICES.DAPP, options);
 
     let body = await response.text();
 

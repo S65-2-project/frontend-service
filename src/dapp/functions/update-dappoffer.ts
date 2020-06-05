@@ -9,7 +9,7 @@ export async function UpdateDAppOffer(id: any,model : UpdateDAppOfferModel) : Pr
         },
         body: JSON.stringify(model)
     };
-    let response = await fetch(config.SERVICES.DApp+"/"+id, options);
+    let response = await fetch(config.SERVICES.DAPP+"/"+id, options);
 
     let body = await response.text();
 

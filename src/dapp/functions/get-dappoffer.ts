@@ -7,7 +7,7 @@ export async function GetDAppOffer (id:any) : Promise<DAppResponses>{
             'Content-Type': 'application/json'
         },
     };
-    let response = await fetch(config.SERVICES.DApp+"/"+id, options);
+    let response = await fetch(config.SERVICES.DAPP+"/"+id, options);
 
     let body = await response.text();
 

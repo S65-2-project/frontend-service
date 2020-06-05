@@ -15,7 +15,6 @@ const DelegateUpdate = (props: any) => {
         event.preventDefault();
         event.stopPropagation();
         try {
-            console.log(updateModel);
             await UpdateDelegateOffer(id, updateModel);
             props.history.push("/dapp-overview")
         } catch (er) {
@@ -86,8 +85,8 @@ const DelegateUpdate = (props: any) => {
                     AvailableForInMonths: result.availableForInMonths,
                     Region: result.region,
                     Description: result.description
-                }
-                console.log(updatemodel);
+                };
+                // eslint-disable-next-line
                 updateModel = updatemodel;
                 initializeHtmlBlock(updatemodel);
             } catch (Error) {
