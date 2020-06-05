@@ -1,10 +1,11 @@
 import React, {useEffect} from "react";
-import {DAppOffer, User} from './types/DAppOffer';
+import {DAppOffer} from './types/DAppOffer';
 import config from "../config.json";
 import {useParams, withRouter} from "react-router";
 import {Alert, Form, ListGroup} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import {connect} from "react-redux";
+import {User} from "./types/CreateDAppOfferModel";
 
 export const DAppOfferDetails = (props: any) => {
 
@@ -26,7 +27,7 @@ export const DAppOfferDetails = (props: any) => {
                 cache: "default"
             };
             let idRequest: string = "/"+id;
-            let response: Response = await fetch(config.SERVICES.DAppOfferGet+idRequest, options);
+            let response: Response = await fetch(config.SERVICES.DAPP+idRequest, options);
             let body = await response.text();
             if (response.status === 200) {
                 console.log(body)
@@ -40,11 +41,11 @@ export const DAppOfferDetails = (props: any) => {
             try {
 
                 let details: DAppOffer = await getInformation(id);
-                const participants = details.delegatesCurrentlyInOffer.map(
+                const participants = details.DelegatesCurrentlyInOffer.map(
                     (delegate: User) =>
                         <ListGroup.Item>
-                            <Link to={"/profile/" + delegate.id}>
-                                {delegate.name}
+                            <Link to={"/profile/" + delegate.Id}>
+                                {delegate.Name}
                             </Link>
                         </ListGroup.Item>
                 );
@@ -55,22 +56,22 @@ export const DAppOfferDetails = (props: any) => {
                     <Form>
                         <h3><Form.Group>
                             <Form.Label>Offer made
-                                by: <Link to={"/profile/" + details.provider.id}><strong>{details.provider.name}</strong></Link>.</Form.Label>
+                                by: <Link to={"/profile/" + details.Provider.Id}><strong>{details.Provider.Name}</strong></Link>.</Form.Label>
                         </Form.Group>
                         </h3>
                         <Form.Group>
                             <Form.Label>Description</Form.Label>
-                            <Form.Control readOnly={true} as="textarea" rows="3" value={details.description}/>
+                            <Form.Control readOnly={true} as="textarea" rows="3" value={details.Description}/>
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>You will need to be available is
-                                for <strong>{details.offerLengthInMonths}</strong> months.</Form.Label>
+                                for <strong>{details.OfferLengthInMonths}</strong> months.</Form.Label>
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>Reward will be <strong>{details.liskPerMonth}</strong> Lisk a month.</Form.Label>
+                            <Form.Label>Reward will be <strong>{details.LiskPerMonth}</strong> Lisk a month.</Form.Label>
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>Delegates need in this offer: <strong>{details.delegatesNeededForOffer}</strong>.</Form.Label>
+                            <Form.Label>Delegates need in this offer: <strong>{details.DelegatesNeededForOffer}</strong>.</Form.Label>
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>delegates currently in offer:</Form.Label>
@@ -79,10 +80,10 @@ export const DAppOfferDetails = (props: any) => {
                             </Form>
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>Date start: <strong>{details.dateStart}</strong></Form.Label>
+                            <Form.Label>Date start: <strong>{details.DateStart}</strong></Form.Label>
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>Date end : <strong>{details.dateEnd}</strong> </Form.Label>
+                            <Form.Label>Date end : <strong>{details.DateEnd}</strong> </Form.Label>
                         </Form.Group>
                     </Form>
                 )
