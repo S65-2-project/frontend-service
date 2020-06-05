@@ -10,6 +10,10 @@ import {Provider} from "react-redux";
 import store from "./store";
 import {BrowserRouter as Router} from "react-router-dom";
 import Profile from "./profile/Profile";
+import DAppCreate from "./dapp/DAppCreate";
+import DelegateCreate from "./delegate/DelegateCreate";
+import DelegateUpdate from "./delegate/DelegateUpdate";
+import DAppUpdate from "./dapp/DAppUpdate";
 import DAppOfferDetails from "./dapp/DAppOfferDetails";
 
 const App = () => (
@@ -25,6 +29,10 @@ const App = () => (
                         <Route path='/register' component={Register}/>
                         <Route path='/logout' component={Logout}/>
                         <Route exact path='/' component={Home}/>
+                        <Route path='/create-dapp' component={DAppCreate}/>
+                        <Route path='/create-delegate' component={DelegateCreate}/>
+                        <Route path='/update-delegate/:id' component={DelegateUpdate}/>
+                        <Route path='/update-dapp/:id' component={DAppUpdate}/>
                     </Switch>
                 </main>
             </Router>

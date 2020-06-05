@@ -1,19 +1,15 @@
-
-
-export interface User {
-    id : string,
-    name : string
-}
+import {User} from "./CreateDAppOfferModel";
 
 export interface DAppOffer{
-    id : string,
-    provider : User,
-    description : string,
-    offerLengthInMonths : number,
-    liskPerMonth: number,
-    delegatesNeededForOffer : number,
-    delegatesCurrentlyInOffer: User[],
-    dateStart : any,
-    dateEnd: any,
-    region : string
+    Id: string
+    Provider: User
+    Title: string
+    Description: string
+    OfferLengthInMonths: number
+    LiskPerMonth: number
+    DelegatesNeededForOffer: number
+    DelegatesCurrentlyInOffer : User[]
+    Region : string
+    DateStart : string
+    DateEnd : string
 }
