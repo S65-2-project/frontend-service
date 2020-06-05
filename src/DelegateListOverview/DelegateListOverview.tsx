@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {apiHeaders, DelegateOffer, RequestDelegateOffersOptions} from "./types/DelegateOffer";
+import {PaginationHeader, DelegateOffer, RequestDelegateOffersOptions} from "./types/DelegateOffer";
 import Card from 'react-bootstrap/Card'
 import Spinner from 'react-bootstrap/Spinner'
 import Button from "react-bootstrap/Button";
@@ -19,6 +19,7 @@ const DelegateListOverview = () => {
 
     // Validation error
     const [showError, setShowError] = React.useState(false);
+    const [errorMessage, setErrorMessage] = React.useState("");
 
     // Filtering fields
     const [searchQ, setSearchQ] = React.useState<string>('');
@@ -29,7 +30,7 @@ const DelegateListOverview = () => {
     const [maxAvailableForInMonth, setMaxAvailableForInMonth] = React.useState<number | undefined>(undefined);
 
     // API Response headers
-    const [headers, setHeaders] = React.useState<apiHeaders>({
+    const [headers, setHeaders] = React.useState<PaginationHeader>({
         CurrentPage: 1,
         HasNext: undefined,
         HasPrevious: undefined,
@@ -53,6 +54,7 @@ const DelegateListOverview = () => {
     // useEffect is only being used on page load. Here it loads the first page of the api call with no filters applied.
     useEffect(() => {
         handleLoadDelegates();
+        // eslint-disable-next-line
     }, []);
 
     // Single function to handle the API call with the data and headers.
@@ -64,7 +66,10 @@ const DelegateListOverview = () => {
             let customHeaders = r.headers;
             setHeaders(customHeaders);
             mapPagesToTSX(customHeaders);
-        })
+        }).catch((error) => {
+            setErrorMessage(error.message)
+            setShowError(true)
+        });
     }
 
     // The actual URL Builder and API Call.
@@ -89,8 +94,13 @@ const DelegateListOverview = () => {
         if (reqOptions.RegionQuery !== "") url += `&regionQuery=${reqOptions.RegionQuery}`
 
         // The API Call
+
         let response = await fetch(url, requestOptions)
         let data = await response.json();
+
+        if (response.status !== 200) {
+            throw new Error(JSON.stringify(data))
+        }
 
         return {headers: JSON.parse(response["headers"].get('X-Pagination') as string), data}
     }
@@ -127,21 +137,19 @@ const DelegateListOverview = () => {
     }
 
     // Mapping of headers to pagination links. This is only for the numbers in between. The outside buttons can be found in the pagination section of the return statement of the base (or this) fuction.
-    const mapPagesToTSX = (headers: apiHeaders) => {
+    const mapPagesToTSX = (headers: PaginationHeader) => {
         let items = []
-        if (headers.CurrentPage === undefined) return <div>dit zou nooit gezien mogen worden</div>
-        else {
-            for (let number = 1; number <= headers.TotalPages; number++) {
-                items.push(
-                    <Pagination.Item onClick={() => {
-                        handleClickNumber(number)
-                    }} key={number} active={number === headers.CurrentPage}>
-                        {number}
-                    </Pagination.Item>,
-                );
-            }
-            setPagination(<>{items}</>);
+        for (let number = 1; number <= headers.TotalPages; number++) {
+            items.push(
+                <Pagination.Item onClick={() => {
+                    handleClickNumber(number)
+                }} key={number} active={number === headers.CurrentPage}>
+                    {number}
+                </Pagination.Item>,
+            );
         }
+        setPagination(<>{items}</>);
+
     }
 
     // handling of the most left pagination button (<<)
@@ -247,6 +255,7 @@ const DelegateListOverview = () => {
 
         if (maxPrice !== undefined && maxPrice < event.target.value) {
             setShowError(true)
+            setErrorMessage("Please check that the minimal price or availability is less than the maximum price or availability!")
         } else {
             setShowError(false)
         }
@@ -258,6 +267,7 @@ const DelegateListOverview = () => {
 
         if (minPrice !== undefined && minPrice > event.target.value) {
             setShowError(true)
+            setErrorMessage("Please check that the minimal price or availability is less than the maximum price or availability!")
         } else {
             setShowError(false)
         }
@@ -269,6 +279,7 @@ const DelegateListOverview = () => {
 
         if (maxAvailableForInMonth !== undefined && maxAvailableForInMonth < event.target.value) {
             setShowError(true)
+            setErrorMessage("Please check that the minimal price or availability is less than the maximum price or availability!")
         } else {
             setShowError(false)
         }
@@ -280,6 +291,7 @@ const DelegateListOverview = () => {
 
         if (minAvailableForInMonth !== undefined && minAvailableForInMonth > event.target.value) {
             setShowError(true)
+            setErrorMessage("Please check that the minimal price or availability is less than the maximum price or availability!")
         } else {
             setShowError(false)
         }
@@ -299,8 +311,7 @@ const DelegateListOverview = () => {
                         ? <Alert variant="danger" onClose={() => setShowError(false)} dismissible>
                             <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
                             <p>
-                                Please check that the minimal price or availability is less than the maximum price or
-                                availability!
+                                {errorMessage}
                             </p>
                         </Alert>
                         : <></>

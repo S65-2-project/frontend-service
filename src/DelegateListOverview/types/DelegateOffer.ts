@@ -3,7 +3,7 @@ export interface User {
     name: string;
 }
 
-export interface apiHeaders {
+export interface PaginationHeader {
     TotalCount: number | undefined;
     PageSize: number | undefined;
     CurrentPage: number;
