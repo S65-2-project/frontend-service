@@ -5,6 +5,7 @@ import Home from "./components/Home";
 import Login from "./authentication/Login";
 import Logout from "./authentication/Logout";
 import Register from "./authentication/Register";
+import DelegateListOverview from "./DelegateListOverview/DelegateListOverview";
 import TopNavigation from "./components/TopNavigation";
 import {Provider} from "react-redux";
 import store from "./store";
@@ -23,8 +24,9 @@ const App = () => (
                 <TopNavigation/>
                 <main role="main" className="container">
                     <Switch>
-                        <Route path='/profile/:id'>{Profile}</Route>
+                        <Route path='/profile/:id' component={Profile}/>
                         <Route path='/dappoffer/:id'>{DAppOfferDetails}</Route>
+                        <Route path='/delegate-overview' component={DelegateListOverview}/>
                         <Route path='/login' component={Login}/>
                         <Route path='/register' component={Register}/>
                         <Route path='/logout' component={Logout}/>
