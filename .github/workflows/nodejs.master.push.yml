@@ -56,6 +56,12 @@ jobs:
           name: dockerfile-artifact
           path: ./Dockerfile
 
+      - name: Upload nginx config artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: nginx-artifact
+          path: ./nginx.conf
+
       - name: Upload Kubernetes artifact
         uses: actions/upload-artifact@v1
         with:
@@ -72,11 +78,19 @@ jobs:
         with:
           name: release-artifact
           path: ./build
+
       - name: Download Dockerfile artifact
         uses: actions/download-artifact@v1
         with:
           name: dockerfile-artifact
           path: .
+
+      - name: Download nginx config artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: nginx-artifact
+          path: .
+
       
       # Get the tag version 
       - name: Get tag version
