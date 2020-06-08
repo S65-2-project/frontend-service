@@ -14,7 +14,7 @@ const DelegateCreate = (props: any) =>{
         event.stopPropagation();
         try{
             await createDelegateOffer(createModel);
-            props.history.push("/dapp-overview")
+            props.history.push("/delegate-overview")
         }
         catch(er){
             addError(er);
