@@ -123,7 +123,7 @@ const DelegateListOverview = () => {
                             <b> {item.region}</b> </ListGroup.Item>
                         <ListGroup.Item variant="secondary">Available
                             for <b>{item.availableForInMonths}</b> months</ListGroup.Item>
-                        <ListGroup.Item variant="primary">Price: <b>{item.liskPerMonth}</b> Lisk</ListGroup.Item>
+                        <ListGroup.Item variant="primary">Price: <b>{item.liskPerMonth}</b> Lisk per month  </ListGroup.Item>
                     </ListGroup>
                     <Card.Footer style={{height: '100px'}}>
                         <Button variant="primary">Start de chat!</Button>

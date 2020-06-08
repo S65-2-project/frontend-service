@@ -40,11 +40,18 @@ jobs:
         with:
           name: release-artifact
           path: ./build
+
       - name: Upload Dockerfile artifact
         uses: actions/upload-artifact@v1
         with:
           name: dockerfile-artifact
           path: ./Dockerfile
+
+      - name: Upload nginx config artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: nginx-artifact
+          path: ./nginx.conf
   deliver:
     needs: build
     runs-on: ubuntu-18.04
@@ -55,10 +62,17 @@ jobs:
         with:
           name: release-artifact
           path: ./build
+
       - name: Download Dockerfile artifact
         uses: actions/download-artifact@v1
         with:
           name: dockerfile-artifact
+          path: .
+
+      - name: Download nginx config artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: nginx-artifact
           path: .
 
       # Deliver Docker image to DockerHub
