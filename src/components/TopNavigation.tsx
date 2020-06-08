@@ -47,6 +47,7 @@ const TopNavigation = (props: any) => {
                 <Nav.Link href={"/delegate-overview"}>Delegates</Nav.Link>
                 <Nav.Link href={"/create-dapp"}>Create Dapp</Nav.Link>
                 <Nav.Link href={"/create-delegate"}>Become Delegate</Nav.Link>
+                <Nav.Link href={"/chat"} >Chat</Nav.Link>
                 <Navbar.Collapse className="justify-content-end">
                     <Nav className="">
                         {registerText}
