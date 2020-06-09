@@ -12,8 +12,10 @@ const DAppCreate = (props: any) => {
         event.preventDefault();
         event.stopPropagation();
         try{
-            var obj = await createDappOffer(createModel, props.auth.User.token);
-           props.history.push("/dappoffer/"+obj.Id);
+            let dapp = await createDappOffer(createModel, props.auth.User.token);
+            console.log(dapp)
+           props.history.push("/dappoffer/"+dapp.id);
+
         }
         catch(er){
             addError(er);
@@ -27,7 +29,7 @@ const DAppCreate = (props: any) => {
         }}>{er.message}</Alert>);
     };
     //eslint
-    useEffect(() => {createModel.Provider = {Id : props.auth.User.id, Name :props.auth.User.email}});//onmount fill in provider
+    useEffect(() => {createModel.Provider = {id : props.auth.User.id, Name :props.auth.User.email}});//onmount fill in provider
 
     const createHtmlBlock =
         <Form className={"form-container"} onSubmit={CreateDApp}>

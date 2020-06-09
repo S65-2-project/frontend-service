@@ -43,12 +43,13 @@ const TopNavigation = (props: any) => {
         <div>
             <Navbar bg="dark" variant="dark">
                 <Navbar.Brand href="/">Lisk Marketplace</Navbar.Brand>
-                {profileNavigationBlock}
                 <Nav.Link href={"/delegate-overview"}>Delegates</Nav.Link>
-                <Nav.Link href={"/create-dapp"}>Create Dapp</Nav.Link>
+                <Nav.Link href={"/dapp-overview"}>DApps</Nav.Link>
+                <Nav.Link href={"/create-dapp"}>Create DApp</Nav.Link>
                 <Nav.Link href={"/create-delegate"}>Become Delegate</Nav.Link>
                 <Navbar.Collapse className="justify-content-end">
                     <Nav className="">
+                        {profileNavigationBlock}
                         {registerText}
                         <Nav.Link href={loginLink}>{loginText}</Nav.Link>
                     </Nav>
