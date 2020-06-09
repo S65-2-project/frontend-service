@@ -1,4 +1,4 @@
-export interface User {
+export interface DelegateOfferUser {
     id: string;
     name: string;
 }
@@ -25,7 +25,7 @@ export interface RequestDelegateOffersOptions {
 
 export interface DelegateOffer {
     id: string;
-    provider: User;
+    provider: DelegateOfferUser;
     title: string;
     description: string;
     liskPerMonth: number;

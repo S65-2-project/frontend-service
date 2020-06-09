@@ -45,6 +45,8 @@ const TopNavigation = (props: any) => {
                 <Navbar.Brand href="/">Lisk Marketplace</Navbar.Brand>
                 {profileNavigationBlock}
                 <Nav.Link href={"/delegate-overview"}>Delegates</Nav.Link>
+                <Nav.Link href={"/create-dapp"}>Create Dapp</Nav.Link>
+                <Nav.Link href={"/create-delegate"}>Become Delegate</Nav.Link>
                 <Navbar.Collapse className="justify-content-end">
                     <Nav className="">
                         {registerText}
