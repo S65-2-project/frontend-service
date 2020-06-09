@@ -9,6 +9,7 @@
 
 .chat-list {
     width: 350px;
+    max-height: 500px;
     margin: 5px;
     background-color: orange;
 }
