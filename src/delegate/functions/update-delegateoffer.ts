@@ -1,11 +1,12 @@
 import config from "../../config.json";
 import {UpdateDelegateOfferModel} from "../types/UpdateDelegateOfferModel";
 
-export async function UpdateDelegateOffer(id: any, model: UpdateDelegateOfferModel){
+export async function UpdateDelegateOffer(id: any, model: UpdateDelegateOfferModel, token : string){
     let options: RequestInit = {
         method: 'PUT',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization' : "Bearer " +token
         },
         body: JSON.stringify(model)
     };
