@@ -151,7 +151,6 @@ const DelegateListOverview = (props : any) => {
           buyer : buyer,
           seller : seller
         }
-        console.log(createChat)
 
         let options: RequestInit = {
             method: "POST",
@@ -168,7 +167,7 @@ const DelegateListOverview = (props : any) => {
             props.history.push('/chat')
         } else {
             let text = await response.text();
-            console.log(text)
+            Error(text)
         }
     }
 
