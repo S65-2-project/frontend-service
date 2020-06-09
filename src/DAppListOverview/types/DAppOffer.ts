@@ -1,4 +1,4 @@
-export interface User {
+export interface DAppOfferUser {
     id: string;
     name: string;
 }
@@ -12,23 +12,23 @@ export interface PaginationHeader {
     HasPrevious: boolean | undefined;
 }
 
-export interface RequestDelegateOffersOptions {
+export interface RequestDAppOfferOptions {
     PageNumber: number;
     PageSize: number;
-    MaxMonth: number | undefined;
-    MinMonth: number | undefined;
-    MinPrice: number | undefined;
-    MaxPrice: number | undefined;
+    MinReward: number | undefined;
+    MaxReward: number | undefined;
     RegionQuery: string;
     SearchQuery: string
 }
 
-export interface DelegateOffer {
+export interface DAppOffer {
     id: string;
-    provider: User;
+    provider: DAppOfferUser;
     title: string;
     description: string;
     liskPerMonth: number;
     region: string;
-    availableForInMonths: number;
+    offerLengthInMonths: number;
+    dateStart: string;
+    dateEnd: string;
 }

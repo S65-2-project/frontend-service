@@ -1,9 +1,9 @@
 import React, {useEffect} from "react";
-import {PaginationHeader, DelegateOffer, RequestDelegateOffersOptions} from "./types/DelegateOffer";
+import {DAppOffer, PaginationHeader, RequestDAppOfferOptions} from "./types/DAppOffer";
 import Card from 'react-bootstrap/Card'
 import Spinner from 'react-bootstrap/Spinner'
 import Button from "react-bootstrap/Button";
-import './DelegateListOverview.css'
+import './DAppListOverview.css'
 import ListGroup from "react-bootstrap/ListGroup";
 import {Link} from "react-router-dom";
 import config from '../config.json';
@@ -11,10 +11,10 @@ import Pagination from "react-bootstrap/Pagination";
 import {Form} from "react-bootstrap";
 import Alert from "react-bootstrap/Alert";
 
-const DelegateListOverview = () => {
+const DAppListOverview = () => {
 
     // HTML Objects
-    const [delegateCards, setDelegateCards] = React.useState(<></>);
+    const [dappCards, setDappCards] = React.useState(<></>);
     const [pagination, setPagination] = React.useState(<></>);
 
     // Validation error
@@ -24,10 +24,8 @@ const DelegateListOverview = () => {
     // Filtering fields
     const [searchQ, setSearchQ] = React.useState<string>('');
     const [regionQ, setRegionQ] = React.useState<string>('');
-    const [maxPrice, setMaxPrice] = React.useState<number | undefined>(undefined);
-    const [minPrice, setMinPrice] = React.useState<number | undefined>(undefined);
-    const [minMonth, setMinMonth] = React.useState<number | undefined>(undefined);
-    const [maxMonth, setMaxMonth] = React.useState<number | undefined>(undefined);
+    const [maxReward, setMaxReward] = React.useState<number | undefined>(undefined);
+    const [minReward, setMinReward] = React.useState<number | undefined>(undefined);
 
     // API Response headers
     const [headers, setHeaders] = React.useState<PaginationHeader>({
@@ -40,11 +38,9 @@ const DelegateListOverview = () => {
     });
 
     // Standard API GET Parameters
-    const [requestDelegateOffersOptions, setRequestDelegateOffersOptions] = React.useState<RequestDelegateOffersOptions>({
-        MaxMonth: undefined,
-        MaxPrice: undefined,
-        MinMonth: undefined,
-        MinPrice: undefined,
+    const [requestDAppOfferOptions, setRequestDAppOfferOptions] = React.useState<RequestDAppOfferOptions>({
+        MaxReward: undefined,
+        MinReward: undefined,
         PageNumber: 1,
         PageSize: 9,
         RegionQuery: "",
@@ -59,9 +55,9 @@ const DelegateListOverview = () => {
 
     // Single function to handle the API call with the data and headers.
     function handleLoadDelegates() {
-        setDelegateCards(<div className="col-lg-4 d-flex align-items-stretch" style={{marginTop: '30px'}}><Spinner animation="border" variant="primary"/></div>);
+        setDappCards(<div className="col-lg-4 d-flex align-items-stretch" style={{marginTop: '30px'}}><Spinner animation="border" variant="primary"/></div>);
 
-        loadDelegates(requestDelegateOffersOptions).then(r => {
+        loadDelegates(requestDAppOfferOptions).then(r => {
             mapJsonToTSX(r.data);
             let customHeaders = r.headers;
             setHeaders(customHeaders);
@@ -73,7 +69,7 @@ const DelegateListOverview = () => {
     }
 
     // The actual URL Builder and API Call.
-    const loadDelegates = async (reqOptions: RequestDelegateOffersOptions) => {
+    const loadDelegates = async (reqOptions: RequestDAppOfferOptions) => {
         // Request headers and other parameters
         const requestOptions: any = {
             method: 'GET',
@@ -83,13 +79,11 @@ const DelegateListOverview = () => {
         };
 
         // Bare minimum URL
-        let url = `${config.SERVICES.DELEGATE}?PageNumber=${reqOptions?.PageNumber.toString()}&PageSize=${reqOptions?.PageSize}`
+        let url = `${config.SERVICES.DAPP}?PageNumber=${reqOptions?.PageNumber.toString()}&PageSize=${reqOptions?.PageSize}`
 
         // Additional components based on if they are populated or not
-        if (reqOptions.MaxMonth) url += `&MaxMonth=${reqOptions.MaxMonth}`
-        if (reqOptions.MinMonth) url += `&MinMonth=${reqOptions.MinMonth}`
-        if (reqOptions.MaxPrice) url += `&MaxPrice=${reqOptions.MaxPrice}`
-        if (reqOptions.MinPrice) url += `&MinPrice=${reqOptions.MinPrice}`
+        if (reqOptions.MaxReward) url += `&MaxReward=${reqOptions.MaxReward}`
+        if (reqOptions.MinReward) url += `&MinReward=${reqOptions.MinReward}`
         if (reqOptions.SearchQuery !== "") url += `&searchQuery=${reqOptions.SearchQuery}`
         if (reqOptions.RegionQuery !== "") url += `&regionQuery=${reqOptions.RegionQuery}`
 
@@ -98,6 +92,7 @@ const DelegateListOverview = () => {
         let response = await fetch(url, requestOptions)
         let data = await response.json();
 
+        console.log(response)
         if (response.status !== 200) {
             throw new Error(JSON.stringify(data))
         }
@@ -106,7 +101,7 @@ const DelegateListOverview = () => {
     }
 
     // The mapping of delegate objects from the json to HTML code
-    const mapJsonToTSX = (json: DelegateOffer[]) => {
+    const mapJsonToTSX = (json: DAppOffer[]) => {
         let mappedItems = json.map((item, key) => {
             return <div className="col-lg-4 d-flex align-items-stretch" style={{marginTop: '30px'}} key={item.id}>
                 <Card className="card-styling card-hover" border="secondary" bg="light" style={{width: '100%'}}>
@@ -114,26 +109,33 @@ const DelegateListOverview = () => {
                         <Card.Title>{item.title}</Card.Title>
                         <Card.Subtitle className="mb-2 text-muted">Made by <i><Link
                             to={{pathname: "/profile/" + item.provider.id}}>{item.provider.name}</Link></i></Card.Subtitle>
-                        <Card.Text>
-                            {item.description}
-                        </Card.Text>
                     </Card.Body>
                     <ListGroup variant="flush">
                         <ListGroup.Item variant="secondary">Region:
-                            <b> {item.region}</b> </ListGroup.Item>
-                        <ListGroup.Item variant="secondary">Available
-                            for <b> {item.availableForInMonths}</b> months</ListGroup.Item>
-                        <ListGroup.Item variant="primary">Price: <b>{item.liskPerMonth}</b> Lisk per month  </ListGroup.Item>
+                            <b> {item.region}</b>
+                        </ListGroup.Item>
+                        <ListGroup.Item variant="secondary">Offer length:
+                            <b> {item.offerLengthInMonths}</b> months
+                        </ListGroup.Item>
+                        <ListGroup.Item variant="secondary">Start of offer:
+                            <b> {new Date(item.dateStart).toLocaleDateString()}</b>
+                        </ListGroup.Item>
+                        <ListGroup.Item variant="secondary">End of offer:
+                            <b> {new Date(item.dateEnd).toLocaleDateString()}</b>
+                        </ListGroup.Item>
+                        <ListGroup.Item variant="primary">Reward: <b>{item.liskPerMonth}</b> Lisk per month
+                        </ListGroup.Item>
                     </ListGroup>
                     <Card.Footer style={{height: '100px'}}>
-                        <Button variant="primary">Start de chat!</Button>
+                        <Link className="btn btn-primary" to={{pathname: "/dappoffer/" + item.id}}>Show more
+                            details</Link>
                     </Card.Footer>
 
                 </Card>
             </div>
         })
 
-        setDelegateCards(<>{mappedItems}</>)
+        setDappCards(<>{mappedItems}</>)
     }
 
     // Mapping of headers to pagination links. This is only for the numbers in between. The outside buttons can be found in the pagination section of the return statement of the base (or this) fuction.
@@ -154,41 +156,41 @@ const DelegateListOverview = () => {
 
     // handling of the most left pagination button (<<)
     const handleClickFirst = () => {
-        let alteredRequestOptions = requestDelegateOffersOptions;
+        let alteredRequestOptions = requestDAppOfferOptions;
         alteredRequestOptions.PageNumber = 1;
-        setRequestDelegateOffersOptions(alteredRequestOptions);
+        setRequestDAppOfferOptions(alteredRequestOptions);
         handleLoadDelegates()
     }
 
     // Handling of the second pagination button (<)
     const handleClickPrevious = () => {
-        let alteredRequestOptions = requestDelegateOffersOptions;
-        alteredRequestOptions.PageNumber = requestDelegateOffersOptions.PageNumber - 1;
-        setRequestDelegateOffersOptions(alteredRequestOptions);
+        let alteredRequestOptions = requestDAppOfferOptions;
+        alteredRequestOptions.PageNumber = requestDAppOfferOptions.PageNumber - 1;
+        setRequestDAppOfferOptions(alteredRequestOptions);
         handleLoadDelegates()
     }
 
     // Handling of the number in between (*)
     const handleClickNumber = (number: number) => {
-        let alteredRequestOptions = requestDelegateOffersOptions;
+        let alteredRequestOptions = requestDAppOfferOptions;
         alteredRequestOptions.PageNumber = number;
-        setRequestDelegateOffersOptions(alteredRequestOptions);
+        setRequestDAppOfferOptions(alteredRequestOptions);
         handleLoadDelegates()
     }
 
     // Handling of the second to last pagination button (>)
     const handleClickNext = () => {
-        let alteredRequestOptions = requestDelegateOffersOptions;
-        alteredRequestOptions.PageNumber = requestDelegateOffersOptions.PageNumber + 1;
-        setRequestDelegateOffersOptions(alteredRequestOptions);
+        let alteredRequestOptions = requestDAppOfferOptions;
+        alteredRequestOptions.PageNumber = requestDAppOfferOptions.PageNumber + 1;
+        setRequestDAppOfferOptions(alteredRequestOptions);
         handleLoadDelegates()
     }
 
     // Handling of the last pagination button (>>)
     const handleClickLast = () => {
-        let alteredRequestOptions = requestDelegateOffersOptions;
+        let alteredRequestOptions = requestDAppOfferOptions;
         alteredRequestOptions.PageNumber = headers.TotalPages;
-        setRequestDelegateOffersOptions(alteredRequestOptions);
+        setRequestDAppOfferOptions(alteredRequestOptions);
         handleLoadDelegates()
     }
 
@@ -202,21 +204,19 @@ const DelegateListOverview = () => {
         return headers.HasNext === false;
     }
 
-    // Apply filtering method. All fields are copied over to the {requestDelegateOffersOptions}. Then this object is being used to do the API Call.
+    // Apply filtering method. All fields are copied over to the {requestDAppOfferOptions}. Then this object is being used to do the API Call.
     const applyFiltering = () => {
-        let alteredRequestOptions = requestDelegateOffersOptions;
+        let alteredRequestOptions = requestDAppOfferOptions;
         //reset pagination
         alteredRequestOptions.PageNumber = 1
 
         //apply filtering on these fields
         alteredRequestOptions.SearchQuery = searchQ
         alteredRequestOptions.RegionQuery = regionQ
-        alteredRequestOptions.MinPrice = minPrice
-        alteredRequestOptions.MaxPrice = maxPrice
-        alteredRequestOptions.MinMonth = minMonth
-        alteredRequestOptions.MaxMonth = maxMonth
+        alteredRequestOptions.MinReward = minReward
+        alteredRequestOptions.MaxReward = maxReward
 
-        setRequestDelegateOffersOptions(alteredRequestOptions)
+        setRequestDAppOfferOptions(alteredRequestOptions)
 
         handleLoadDelegates()
     }
@@ -226,13 +226,9 @@ const DelegateListOverview = () => {
         setSearchQ("")
         setRegionQ("")
         // @ts-ignore
-        setMaxPrice("")
+        setMaxReward("")
         // @ts-ignore
-        setMinPrice("")
-        // @ts-ignore
-        setMaxMonth("")
-        // @ts-ignore
-        setMinMonth("")
+        setMinReward("")
     }
 
     // on Change method
@@ -250,10 +246,10 @@ const DelegateListOverview = () => {
     };
 
     // on Change method with a check if the min price is higher than the max price. If it is then show an error.
-    const onMinPriceChange = (event: any) => {
-        setMinPrice(event.target.value)
+    const onMinRewardChange = (event: any) => {
+        setMinReward(event.target.value)
 
-        if (maxPrice !== undefined && maxPrice < event.target.value) {
+        if (maxReward !== undefined && maxReward < event.target.value) {
             setShowError(true)
             setErrorMessage("Please check that the minimal price or availability is less than the maximum price or availability!")
         } else {
@@ -262,34 +258,10 @@ const DelegateListOverview = () => {
     }
 
     // on Change method with a check if the min price is higher than the max price. If it is then show an error.
-    const onMaxPriceChange = (event: any) => {
-        setMaxPrice(event.target.value)
+    const onMaxRewardChange = (event: any) => {
+        setMaxReward(event.target.value)
 
-        if (minPrice !== undefined && minPrice > event.target.value) {
-            setShowError(true)
-            setErrorMessage("Please check that the minimal price or availability is less than the maximum price or availability!")
-        } else {
-            setShowError(false)
-        }
-    }
-
-    // on Change method with a check if the min availability is higher than the max availability. If it is then show an error.
-    const onMinAvailabilityChange = (event: any) => {
-        setMinMonth(event.target.value)
-
-        if (maxMonth !== undefined && maxMonth < event.target.value) {
-            setShowError(true)
-            setErrorMessage("Please check that the minimal price or availability is less than the maximum price or availability!")
-        } else {
-            setShowError(false)
-        }
-    }
-
-    // on Change method with a check if the min availability is higher than the max availability. If it is then show an error.
-    const onMaxAvailabilityChange = (event: any) => {
-        setMaxMonth(event.target.value)
-
-        if (minMonth !== undefined && minMonth > event.target.value) {
+        if (minReward !== undefined && minReward > event.target.value) {
             setShowError(true)
             setErrorMessage("Please check that the minimal price or availability is less than the maximum price or availability!")
         } else {
@@ -317,25 +289,25 @@ const DelegateListOverview = () => {
                         : <></>
                 }
                 <div className="row">
-                    <div className="col-lg-4">
+                    <div className="col-lg-3">
                         <Form.Group>
-                            <Form.Label>Search (Title):</Form.Label>
+                            <Form.Label>Search (title):</Form.Label>
                             <Form.Control type="text" onChange={onSearchQueryChange} value={searchQ}/>
                         </Form.Group>
                     </div>
-                    <div className="col-lg-4">
+                    <div className="col-lg-3">
                         <Form.Group>
-                            <Form.Label>Min price: </Form.Label>
-                            <Form.Control type="number" onChange={onMinPriceChange} value={minPrice}/>
+                            <Form.Label>Min reward: </Form.Label>
+                            <Form.Control type="number" onChange={onMinRewardChange} value={minReward}/>
                         </Form.Group>
                     </div>
-                    <div className="col-lg-4">
+                    <div className="col-lg-3">
                         <Form.Group>
-                            <Form.Label>Max price: </Form.Label>
-                            <Form.Control type="number" onChange={onMaxPriceChange} value={maxPrice}/>
+                            <Form.Label>Max reward: </Form.Label>
+                            <Form.Control type="number" onChange={onMaxRewardChange} value={maxReward}/>
                         </Form.Group>
                     </div>
-                    <div className="col-lg-4">
+                    <div className="col-lg-3">
                         <Form.Group controlId="exampleForm.ControlSelect1">
                             <Form.Label>Region:</Form.Label>
                             <Form.Control as="select" onChange={onRegionQueryChange} value={regionQ}>
@@ -350,20 +322,6 @@ const DelegateListOverview = () => {
                         </Form.Group>
                     </div>
                     <div className="col-lg-4">
-                        <Form.Group>
-                            <Form.Label>Minimal availability (Months): </Form.Label>
-                            <Form.Control type="number" onChange={onMinAvailabilityChange}
-                                          value={minMonth}/>
-                        </Form.Group>
-                    </div>
-                    <div className="col-lg-4">
-                        <Form.Group>
-                            <Form.Label>Maximal availability (Months): </Form.Label>
-                            <Form.Control type="number" onChange={onMaxAvailabilityChange}
-                                          value={maxMonth}/>
-                        </Form.Group>
-                    </div>
-                    <div className="col-lg-4">
                         <Button variant="primary" onClick={applyFiltering}>Apply filtering</Button> <Button
                         variant="secondary" onClick={clearFilteringFields}>Clear fields</Button>
                     </div>
@@ -371,7 +329,7 @@ const DelegateListOverview = () => {
             </div>
 
             <div className="row">
-                {delegateCards}
+                {dappCards}
             </div>
             <div style={{marginTop: "30px"}}>
                 <Pagination>
@@ -386,4 +344,4 @@ const DelegateListOverview = () => {
     );
 }
 
-export default DelegateListOverview;
+export default DAppListOverview;

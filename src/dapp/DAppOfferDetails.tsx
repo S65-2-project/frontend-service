@@ -72,48 +72,61 @@ export const DAppOfferDetails = (props: any) => {
         const loadHtml = async (id: string) => {
             try {
                 let details: DAppOffer = await getInformation(id);
-                const participants = details.DelegatesCurrentlyInOffer.map(
-                    (delegate: User) =>
-                        <ListGroup.Item>
-                            <Link to={"/profile/" + delegate.Id}>
-                                {delegate.Name}
-                            </Link>
-                        </ListGroup.Item>
-                );
-                let participantBlock = <ListGroup>{participants}</ListGroup>;
+                console.log(details)
+                let participantBlock = <>0</>
+                if (details.delegatesCurrentlyInOffer.length !== 0) {
+                    const participants = details.delegatesCurrentlyInOffer.map(
+                        (delegate: User) =>
+                            <ListGroup.Item>
+                                <Link to={"/profile/" + delegate.id}>
+                                    {delegate.Name}
+                                </Link>
+                            </ListGroup.Item>
+                    );
+                    console.log(participants)
 
+                    participantBlock = <ListGroup>{participants}</ListGroup>;
+                }
                 setInformation(
-                    <Form>
+                    <Form style={{marginTop: '20px'}}>
                         <h3><Form.Group>
                             <Form.Label>Offer made
-                                by: <Link to={"/profile/" + details.Provider.Id}><strong>{details.Provider.Name}</strong></Link>.</Form.Label>
+                                by: <Link to={"/profile/" + details.provider.id}><strong>{details.provider.Name}</strong></Link>.</Form.Label>
                         </Form.Group>
                         </h3>
                         <Form.Group>
                             <Form.Label>Description</Form.Label>
-                            <Form.Control readOnly={true} as="textarea" rows="3" value={details.Description}/>
+                            <Form.Control readOnly={true} as="textarea" rows="3" value={details.description}/>
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>You will need to be available is
-                                for <strong>{details.OfferLengthInMonths}</strong> months.</Form.Label>
+                                for <strong>{details.offerLengthInMonths}</strong> months.</Form.Label>
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>Reward will be <strong>{details.LiskPerMonth}</strong> Lisk a month.</Form.Label>
+                            <Form.Label>Reward will be <strong>{details.liskPerMonth}</strong> Lisk a month.</Form.Label>
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>Delegates need in this offer: <strong>{details.DelegatesNeededForOffer}</strong>.</Form.Label>
+                            <Form.Label>Delegates need in this offer: <strong>{details.delegatesNeededForOffer}</strong>.</Form.Label>
+                        </Form.Group>
+                        {
+                            details.delegatesCurrentlyInOffer.length !== 0
+                            ?   <Form.Group>
+                                    <Form.Label>Delegates currently in offer:</Form.Label>
+                                    <Form.Group>
+                                        {participantBlock}
+                                    </Form.Group>
+                                </Form.Group>
+                            :   <Form.Group>
+                                    <Form.Label>Delegates currently in offer: none</Form.Label>
+                                </Form.Group>
+
+                        }
+
+                        <Form.Group>
+                            <Form.Label>Date start: <strong>{details.dateStart}</strong></Form.Label>
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>delegates currently in offer:</Form.Label>
-                            <Form>
-                                {participantBlock}
-                            </Form>
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Label>Date start: <strong>{details.DateStart}</strong></Form.Label>
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Label>Date end : <strong>{details.DateEnd}</strong> </Form.Label>
+                            <Form.Label>Date end : <strong>{details.dateEnd}</strong> </Form.Label>
                         </Form.Group>
                         <Button onClick={() => deleteOffer(id)}>Delete</Button>
                     </Form>
