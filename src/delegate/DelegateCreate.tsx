@@ -14,7 +14,7 @@ const DelegateCreate = (props: any) =>{
         event.preventDefault();
         event.stopPropagation();
         try{
-            await createDelegateOffer(createModel);
+            await createDelegateOffer(createModel, props.auth.User.token);
             props.history.push("/delegate-overview")
         }
         catch(er){
