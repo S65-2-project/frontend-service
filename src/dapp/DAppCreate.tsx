@@ -12,7 +12,7 @@ const DAppCreate = (props: any) => {
         event.preventDefault();
         event.stopPropagation();
         try{
-            let dapp = await createDappOffer(createModel);
+            let dapp = await createDappOffer(createModel, props.auth.User.token);
             console.log(dapp)
            props.history.push("/dappoffer/"+dapp.id);
 

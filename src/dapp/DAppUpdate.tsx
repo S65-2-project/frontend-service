@@ -17,7 +17,7 @@ const DAppUpdate = (props: any)=>{
         event.stopPropagation();
         try {
             console.log(updateModel);
-            await UpdateDAppOffer(id, updateModel);
+            await UpdateDAppOffer(id, updateModel,props.auth.User.token);
             props.history.push("/dapp-overview")
         } catch (er) {
             addError(er);

@@ -8,12 +8,13 @@ import {createDelegateOffer} from "./functions/create-delegateoffer";
 const DelegateCreate = (props: any) =>{
     //createmodel var initiates with standard values
     const createModel : CreateDelegateOfferModel = initDelegateCreateOffer;
-    useEffect(() => {createModel.Provider = {Id : props.auth.User.id, Name :props.auth.User.email}});//onmount fill in provider
+    useEffect(() => {
+        createModel.Provider = {Id : props.auth.User.id, Name :props.auth.User.email}});//onmount fill in provider
     const CreateDelegate = async (event: any)=>{
         event.preventDefault();
         event.stopPropagation();
         try{
-            await createDelegateOffer(createModel);
+            await createDelegateOffer(createModel, props.auth.User.token);
             props.history.push("/delegate-overview")
         }
         catch(er){
