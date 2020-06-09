@@ -1,7 +1,6 @@
 import {CreateDelegateOfferModel} from "../types/CreateDelegateOfferModel";
 import {DelegateOffer} from "../types/DelegateOffer";
 import config from "../../config.json";
-import {UpdateDAppOfferModel} from "../../dapp/types/UpdateDAppOfferModel";
 
 export async function createDelegateOffer(model : CreateDelegateOfferModel, token : string) : Promise<DelegateOffer>{
     console.log(token);

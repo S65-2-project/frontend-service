@@ -1,6 +1,5 @@
 import config from "../../config.json";
 import {UpdateDelegateOfferModel} from "../types/UpdateDelegateOfferModel";
-import {UpdateDAppOfferModel} from "../../dapp/types/UpdateDAppOfferModel";
 
 export async function UpdateDelegateOffer(id: any, model: UpdateDelegateOfferModel, token : string){
     let options: RequestInit = {
