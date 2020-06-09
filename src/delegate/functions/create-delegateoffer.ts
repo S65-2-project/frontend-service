@@ -1,12 +1,15 @@
 import {CreateDelegateOfferModel} from "../types/CreateDelegateOfferModel";
 import {DelegateOffer} from "../types/DelegateOffer";
 import config from "../../config.json";
+import {UpdateDAppOfferModel} from "../../dapp/types/UpdateDAppOfferModel";
 
-export async function createDelegateOffer(model : CreateDelegateOfferModel) : Promise<DelegateOffer>{
+export async function createDelegateOffer(model : CreateDelegateOfferModel, token : string) : Promise<DelegateOffer>{
+    console.log(token);
     let options: RequestInit = {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization' : "Bearer " +token
         },
         body: JSON.stringify(model)
     };
