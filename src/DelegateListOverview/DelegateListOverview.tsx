@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {PaginationHeader, DelegateOffer, RequestDelegateOffersOptions} from "./types/DelegateOffer";
+import {PaginationHeader, DelegateOffer, RequestDelegateOffersOptions, DelegateOfferUser} from "./types/DelegateOffer";
 import Card from 'react-bootstrap/Card'
 import Spinner from 'react-bootstrap/Spinner'
 import Button from "react-bootstrap/Button";
@@ -10,8 +10,11 @@ import config from '../config.json';
 import Pagination from "react-bootstrap/Pagination";
 import {Form} from "react-bootstrap";
 import Alert from "react-bootstrap/Alert";
+import CreateChat from "../types/CreateChat";
+import {connect} from "react-redux";
+import {withRouter} from "react-router";
 
-const DelegateListOverview = () => {
+const DelegateListOverview = (props : any) => {
 
     // HTML Objects
     const [delegateCards, setDelegateCards] = React.useState(<></>);
@@ -125,15 +128,48 @@ const DelegateListOverview = () => {
                             for <b>{item.availableForInMonths}</b> months</ListGroup.Item>
                         <ListGroup.Item variant="primary">Price: <b>{item.liskPerMonth}</b> Lisk per month  </ListGroup.Item>
                     </ListGroup>
+                    {props.auth.User.token !== '' &&
                     <Card.Footer style={{height: '100px'}}>
-                        <Button variant="primary">Start de chat!</Button>
-                    </Card.Footer>
+                        <Button variant="primary" onClick={() => {initializeChat(item.provider)}}>Start de chat!</Button>
+                    </Card.Footer>}
 
                 </Card>
             </div>
         })
 
         setDelegateCards(<>{mappedItems}</>)
+    }
+
+    // Startchat button, starts a chat and redirects user to the chat window
+    const initializeChat = async (seller: DelegateOfferUser) => {
+        let buyer : DelegateOfferUser = {
+            id : props.auth.User.id,
+            name : props.auth.User.email
+        }
+
+        let createChat: CreateChat = {
+          buyer : buyer,
+          seller : seller
+        }
+        console.log(createChat)
+
+        let options: RequestInit = {
+            method: "POST",
+            body: JSON.stringify(createChat),
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + props.auth.User.token
+            },
+            mode: "cors",
+            cache: "default"
+        };
+        let response: Response = await fetch(config.SERVICES.COMMUNICATION_SERVICE, options);
+        if (response.status === 200) {
+            props.history.push('/chat')
+        } else {
+            let text = await response.text();
+            console.log(text)
+        }
     }
 
     // Mapping of headers to pagination links. This is only for the numbers in between. The outside buttons can be found in the pagination section of the return statement of the base (or this) fuction.
@@ -386,4 +422,10 @@ const DelegateListOverview = () => {
     );
 }
 
-export default DelegateListOverview;
+const mapStateToProps = (state : any) => {
+    return {
+        auth : state.auth
+    };
+}
+
+export default withRouter(connect(mapStateToProps)(DelegateListOverview));
