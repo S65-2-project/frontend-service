@@ -72,7 +72,6 @@ export const DAppOfferDetails = (props: any) => {
         const loadHtml = async (id: string) => {
             try {
                 let details: DAppOffer = await getInformation(id);
-                console.log(details)
                 let participantBlock = <>0</>
                 if (details.delegatesCurrentlyInOffer.length !== 0) {
                     const participants = details.delegatesCurrentlyInOffer.map(
@@ -83,8 +82,6 @@ export const DAppOfferDetails = (props: any) => {
                                 </Link>
                             </ListGroup.Item>
                     );
-                    console.log(participants)
-
                     participantBlock = <ListGroup>{participants}</ListGroup>;
                 }
                 setInformation(

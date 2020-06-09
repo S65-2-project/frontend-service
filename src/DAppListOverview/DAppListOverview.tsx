@@ -92,7 +92,6 @@ const DAppListOverview = () => {
         let response = await fetch(url, requestOptions)
         let data = await response.json();
 
-        console.log(response)
         if (response.status !== 200) {
             throw new Error(JSON.stringify(data))
         }
