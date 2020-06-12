@@ -15,50 +15,51 @@ const Chat = (props : any) => {
     const [chatList, setChatList] = useState()
     const [chatEnabled, setChatEnabed] = useState<boolean>(false)
 
-    useEffect(() => {
-        const loadChats = async () => {
-            const options: RequestInit = {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                mode: 'cors',
-                cache: 'default'
-            }
-            let result =  await fetch(config.SERVICES.COMMUNICATION_SERVICE + '/' + props.auth.User.id, options);
-            if (result.status !== 200) {
-                return;
-            }
-
-            let json : ChatModel[] = await result.json();
-            let list : any[] = []
-
-            for (let i =0; i < json.length; i++){
-                let model = json[i];
-                let chatUser = props.auth.User.id === model.buyer.id ? model.seller : model.buyer;
-
-                let chatView = {
-                    id: model.id,
-                    alt: chatUser.name,
-                    title: chatUser.name,
-                    subtitle: 'No messages yet',
-                    date: new Date('1900-01-01'),
-                    unread: model.unread
-                }
-                if (model.message !== null){
-                    chatView.subtitle = model.message.text;
-                    chatView.date = new Date(model.message.timeStamp)
-                }
-                list.push(chatView)
-            }
-            list.sort(function (a,b) {
-                if (a.date < b.date){
-                    return 1;
-                } else return -1;
-            })
-
-            setChatList(list)
+    const loadChats = async () => {
+        const options: RequestInit = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            mode: 'cors',
+            cache: 'default'
         }
+        let result =  await fetch(config.SERVICES.COMMUNICATION_SERVICE + '/' + props.auth.User.id, options);
+        if (result.status !== 200) {
+            return;
+        }
+
+        let json : ChatModel[] = await result.json();
+        let list : any[] = []
+
+        for (let i =0; i < json.length; i++){
+            let model = json[i];
+            let chatUser = props.auth.User.id === model.buyer.id ? model.seller : model.buyer;
+
+            let chatView = {
+                id: model.id,
+                alt: chatUser.name,
+                title: chatUser.name,
+                subtitle: 'No messages yet',
+                date: new Date('1900-01-01'),
+                unread: model.unread
+            }
+            if (model.message !== null){
+                chatView.subtitle = model.message.text;
+                chatView.date = new Date(model.message.timeStamp)
+            }
+            list.push(chatView)
+        }
+        list.sort(function (a,b) {
+            if (a.date < b.date){
+                return 1;
+            } else return -1;
+        })
+
+        setChatList(list)
+    }
+
+    useEffect(() => {
         loadChats();
 
     }, [props.auth.User.id]);
@@ -121,9 +122,26 @@ const Chat = (props : any) => {
             }
             list.push(chatView)
         }
+        await ReadChat(object.id, props.auth.User.id);
 
         setMessageList(list)
         setChatEnabed(true);
+    }
+
+    const ReadChat = async (id: string, userId: string) => {
+        const options: RequestInit = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            mode: 'cors',
+            cache: 'default'
+        }
+        let result = await fetch(config.SERVICES.COMMUNICATION_SERVICE + '/' + id + '/' + userId, options);
+        if (result.status !== 200) {
+            return;
+        }
+        await loadChats();
     }
 
     return <div className={"chat-container"}>
