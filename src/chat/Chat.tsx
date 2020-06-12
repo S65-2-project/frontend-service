@@ -8,15 +8,19 @@ import {withRouter} from "react-router";
 import {connect} from "react-redux";
 import ChatModel from "./types/Chat";
 import Message from "./types/Message";
+import {Alert} from "react-bootstrap";
 
 const Chat = (props : any) => {
     const [message, setMessage] = useState<string>('');
     const [messageList, setMessageList] = useState();
     const [chatList, setChatList] = useState()
     const [chatEnabled, setChatEnabed] = useState<boolean>(false)
+    const [error, setError] = React.useState<JSX.Element>(<></>);
 
-    useEffect(() => {
-        const loadChats = async () => {
+    let inputRef = React.createRef();
+
+    const loadChats = async () => {
+        try {
             const options: RequestInit = {
                 method: 'GET',
                 headers: {
@@ -27,7 +31,7 @@ const Chat = (props : any) => {
             }
             let result =  await fetch(config.SERVICES.COMMUNICATION_SERVICE + '/' + props.auth.User.id, options);
             if (result.status !== 200) {
-                return;
+                throw new Error("No chats found.")
             }
 
             let json : ChatModel[] = await result.json();
@@ -58,12 +62,25 @@ const Chat = (props : any) => {
             })
 
             setChatList(list)
+        } catch (e) {
+            await addError(e);
         }
+
+    }
+
+    useEffect(() => {
         loadChats();
 
+        // eslint-disable-next-line
     }, [props.auth.User.id]);
 
-    let inputRef = React.createRef();
+    //error warning
+    const addError = async (er: any) => {
+        setError(<Alert variant={"warning"} onClick={
+            () => {
+                setError(<div/>);
+            }}>{er.message}</Alert>);
+    };
 
     const onMessageChange = (event: any) => {
         setMessage(event.target.value);
@@ -93,40 +110,62 @@ const Chat = (props : any) => {
     }
 
     const onChatClick = async (object: any) => {
+        try {
+            const options: RequestInit = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                mode: 'cors',
+                cache: 'default'
+            }
+            let result = await fetch(config.SERVICES.COMMUNICATION_SERVICE + '/messages/' + object.id, options);
+            if (result.status !== 200) {
+                throw new Error("Chat could not be loaded")
+            }
+
+            let json : Message[] = await result.json();
+            let list : any[] = []
+
+            for (let i =0; i < json.length; i++){
+                let model = json[i];
+                let messagePosition = props.auth.User.id === model.senderId ? 'right' : 'left';
+
+                let chatView = {
+                    id: model.id,
+                    position: messagePosition,
+                    text: model.text,
+                    date: new Date(model.timeStamp)
+                }
+                list.push(chatView)
+            }
+            await ReadChat(object.id, props.auth.User.id);
+
+            setMessageList(list)
+            setChatEnabed(true);
+        } catch (e) {
+            await addError(e);
+        }
+    }
+
+    const ReadChat = async (id: string, userId: string) => {
         const options: RequestInit = {
-            method: 'GET',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
             mode: 'cors',
             cache: 'default'
         }
-        let result = await fetch(config.SERVICES.COMMUNICATION_SERVICE + '/messages/' + object.id, options);
+        let result = await fetch(config.SERVICES.COMMUNICATION_SERVICE + '/' + id + '/' + userId, options);
         if (result.status !== 200) {
-            return;
+            throw new Error("Could not read chat")
         }
-
-        let json : Message[] = await result.json();
-        let list : any[] = []
-
-        for (let i =0; i < json.length; i++){
-            let model = json[i];
-            let messagePosition = props.auth.User.id === model.senderId ? 'right' : 'left';
-
-            let chatView = {
-                id: model.id,
-                position: messagePosition,
-                text: model.text,
-                date: new Date(model.timeStamp)
-            }
-            list.push(chatView)
-        }
-
-        setMessageList(list)
-        setChatEnabed(true);
+        await loadChats();
     }
 
     return <div className={"chat-container"}>
+        {error}
         <ChatList
             className='chat-list'
             dataSource={chatList}

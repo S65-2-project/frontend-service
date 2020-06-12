@@ -1,11 +1,12 @@
 import {UpdateDAppOfferModel} from "../types/UpdateDAppOfferModel";
 import config from "../../config.json";
 
-export async function UpdateDAppOffer(id: any,model : UpdateDAppOfferModel) : Promise<UpdateDAppOfferModel>{
+export async function UpdateDAppOffer(id: any,model : UpdateDAppOfferModel, token : string) : Promise<UpdateDAppOfferModel>{
     let options: RequestInit = {
         method: 'PUT',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization' : "Bearer " + token
         },
         body: JSON.stringify(model)
     };
