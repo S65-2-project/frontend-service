@@ -136,6 +136,7 @@ jobs:
         run: |
           kubectl apply \
             -f ./kube/autoscaler.yaml \
+            -f ./kube/cluster-issuer \
             -f ./kube/deployment.yaml \
             -f ./kube/ingress.yaml \
             -f ./kube/service.yaml
