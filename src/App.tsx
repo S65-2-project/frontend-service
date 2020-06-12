@@ -16,7 +16,7 @@ import DelegateCreate from "./delegate/DelegateCreate";
 import DelegateUpdate from "./delegate/DelegateUpdate";
 import DAppUpdate from "./dapp/DAppUpdate";
 import DAppOfferDetails from "./dapp/DAppOfferDetails";
-import Chat from "./components/Chat";
+import Chat from "./chat/Chat";
 
 const App = () => (
     <div>
