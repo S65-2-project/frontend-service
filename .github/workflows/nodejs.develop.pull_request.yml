@@ -44,3 +44,33 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_ACCESS_TOKEN }}
+
+  k6:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Run local k6 test
+        uses: k6io/action@v0.1
+        with:
+          filename: test.js
+          cloud: true
+          token: ${{ secrets.K6_API_TOKEN }}
+
+  lighthouse:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create /tmp/lighthouse-report directory
+        run: mkdir /tmp/lighthouse-report
+      
+      - name: Run Lighthouse check
+        uses: foo-software/lighthouse-check-action@master
+        with:
+          outputDirectory: /tmp/lighthouse-report
+          urls: http://34.120.162.205
+
+      - name: Upload Lighthouse report artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: lighthouse-report-artifact
+          path: /tmp/lighthouse-report
