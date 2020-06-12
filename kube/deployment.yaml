@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend-service
-  namespace: s65-2
   labels:
     app: frontend-service
+  name: frontend-service
+  namespace: s65-2
 spec:
   replicas: 1
   selector:
