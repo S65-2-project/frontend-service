@@ -23,3 +23,7 @@ spec:
     - hosts:
         - delegate-market.nl
       secretName: frontend-service-tls
+status:
+  loadBalancer:
+    ingress:
+      - {}
