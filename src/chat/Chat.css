@@ -1,0 +1,29 @@
+.chat-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+
+.chat-list {
+    width: 350px;
+    max-height: 500px;
+    margin: 5px;
+    background-color: orange;
+}
+
+.message-container {
+    width: 700px;
+    margin: 5px;
+    background-color: whitesmoke;
+    display: flex;
+    flex-direction: column;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.message-list {
+    height: 500px;
+}

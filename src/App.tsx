@@ -17,6 +17,7 @@ import DelegateCreate from "./delegate/DelegateCreate";
 import DelegateUpdate from "./delegate/DelegateUpdate";
 import DAppUpdate from "./dapp/DAppUpdate";
 import DAppOfferDetails from "./dapp/DAppOfferDetails";
+import Chat from "./chat/Chat";
 
 const App = () => (
     <div>
@@ -37,6 +38,7 @@ const App = () => (
                         <Route path='/create-delegate' component={DelegateCreate}/>
                         <Route path='/update-delegate/:id' component={DelegateUpdate}/>
                         <Route path='/update-dapp/:id' component={DAppUpdate}/>
+                        <Route path='/chat' component={Chat} />
                     </Switch>
                 </main>
             </Router>
