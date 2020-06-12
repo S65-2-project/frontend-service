@@ -11,4 +11,4 @@ spec:
       targetPort: 80
   selector:
     app: frontend-service
-  type: NodePort
+  type: ClusterIP

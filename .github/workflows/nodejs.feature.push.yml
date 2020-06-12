@@ -16,6 +16,8 @@ jobs:
     steps:
       # Checkout Git repository
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       # Decrypt the GPG encrypted config files
       - name: Decrypt the GPG encrypted config files
