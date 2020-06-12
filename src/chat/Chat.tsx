@@ -8,55 +8,64 @@ import {withRouter} from "react-router";
 import {connect} from "react-redux";
 import ChatModel from "./types/Chat";
 import Message from "./types/Message";
+import {Alert} from "react-bootstrap";
 
 const Chat = (props : any) => {
     const [message, setMessage] = useState<string>('');
     const [messageList, setMessageList] = useState();
     const [chatList, setChatList] = useState()
     const [chatEnabled, setChatEnabed] = useState<boolean>(false)
+    const [error, setError] = React.useState<JSX.Element>(<></>);
+
+    let inputRef = React.createRef();
 
     const loadChats = async () => {
-        const options: RequestInit = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            mode: 'cors',
-            cache: 'default'
-        }
-        let result =  await fetch(config.SERVICES.COMMUNICATION_SERVICE + '/' + props.auth.User.id, options);
-        if (result.status !== 200) {
-            return;
-        }
-
-        let json : ChatModel[] = await result.json();
-        let list : any[] = []
-
-        for (let i =0; i < json.length; i++){
-            let model = json[i];
-            let chatUser = props.auth.User.id === model.buyer.id ? model.seller : model.buyer;
-
-            let chatView = {
-                id: model.id,
-                alt: chatUser.name,
-                title: chatUser.name,
-                subtitle: 'No messages yet',
-                date: new Date('1900-01-01'),
-                unread: model.unread
+        try {
+            const options: RequestInit = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                mode: 'cors',
+                cache: 'default'
             }
-            if (model.message !== null){
-                chatView.subtitle = model.message.text;
-                chatView.date = new Date(model.message.timeStamp)
+            let result =  await fetch(config.SERVICES.COMMUNICATION_SERVICE + '/' + props.auth.User.id, options);
+            if (result.status !== 200) {
+                throw new Error("No chats found.")
             }
-            list.push(chatView)
-        }
-        list.sort(function (a,b) {
-            if (a.date < b.date){
-                return 1;
-            } else return -1;
-        })
 
-        setChatList(list)
+            let json : ChatModel[] = await result.json();
+            let list : any[] = []
+
+            for (let i =0; i < json.length; i++){
+                let model = json[i];
+                let chatUser = props.auth.User.id === model.buyer.id ? model.seller : model.buyer;
+
+                let chatView = {
+                    id: model.id,
+                    alt: chatUser.name,
+                    title: chatUser.name,
+                    subtitle: 'No messages yet',
+                    date: new Date('1900-01-01'),
+                    unread: model.unread
+                }
+                if (model.message !== null){
+                    chatView.subtitle = model.message.text;
+                    chatView.date = new Date(model.message.timeStamp)
+                }
+                list.push(chatView)
+            }
+            list.sort(function (a,b) {
+                if (a.date < b.date){
+                    return 1;
+                } else return -1;
+            })
+
+            setChatList(list)
+        } catch (e) {
+            await addError(e);
+        }
+
     }
 
     useEffect(() => {
@@ -65,7 +74,13 @@ const Chat = (props : any) => {
         // eslint-disable-next-line
     }, [props.auth.User.id]);
 
-    let inputRef = React.createRef();
+    //error warning
+    const addError = async (er: any) => {
+        setError(<Alert variant={"warning"} onClick={
+            () => {
+                setError(<div/>);
+            }}>{er.message}</Alert>);
+    };
 
     const onMessageChange = (event: any) => {
         setMessage(event.target.value);
@@ -95,38 +110,42 @@ const Chat = (props : any) => {
     }
 
     const onChatClick = async (object: any) => {
-        const options: RequestInit = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            mode: 'cors',
-            cache: 'default'
-        }
-        let result = await fetch(config.SERVICES.COMMUNICATION_SERVICE + '/messages/' + object.id, options);
-        if (result.status !== 200) {
-            return;
-        }
-
-        let json : Message[] = await result.json();
-        let list : any[] = []
-
-        for (let i =0; i < json.length; i++){
-            let model = json[i];
-            let messagePosition = props.auth.User.id === model.senderId ? 'right' : 'left';
-
-            let chatView = {
-                id: model.id,
-                position: messagePosition,
-                text: model.text,
-                date: new Date(model.timeStamp)
+        try {
+            const options: RequestInit = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                mode: 'cors',
+                cache: 'default'
             }
-            list.push(chatView)
-        }
-        await ReadChat(object.id, props.auth.User.id);
+            let result = await fetch(config.SERVICES.COMMUNICATION_SERVICE + '/messages/' + object.id, options);
+            if (result.status !== 200) {
+                throw new Error("Chat could not be loaded")
+            }
 
-        setMessageList(list)
-        setChatEnabed(true);
+            let json : Message[] = await result.json();
+            let list : any[] = []
+
+            for (let i =0; i < json.length; i++){
+                let model = json[i];
+                let messagePosition = props.auth.User.id === model.senderId ? 'right' : 'left';
+
+                let chatView = {
+                    id: model.id,
+                    position: messagePosition,
+                    text: model.text,
+                    date: new Date(model.timeStamp)
+                }
+                list.push(chatView)
+            }
+            await ReadChat(object.id, props.auth.User.id);
+
+            setMessageList(list)
+            setChatEnabed(true);
+        } catch (e) {
+            await addError(e);
+        }
     }
 
     const ReadChat = async (id: string, userId: string) => {
@@ -140,12 +159,13 @@ const Chat = (props : any) => {
         }
         let result = await fetch(config.SERVICES.COMMUNICATION_SERVICE + '/' + id + '/' + userId, options);
         if (result.status !== 200) {
-            return;
+            throw new Error("Could not read chat")
         }
         await loadChats();
     }
 
     return <div className={"chat-container"}>
+        {error}
         <ChatList
             className='chat-list'
             dataSource={chatList}
