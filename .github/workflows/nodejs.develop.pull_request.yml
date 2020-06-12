@@ -48,6 +48,8 @@ jobs:
   k6:
     runs-on: ubuntu-18.04
     steps:
+      - uses: actions/checkout@v2
+      
       - name: Run local k6 test
         uses: k6io/action@v0.1
         with:
