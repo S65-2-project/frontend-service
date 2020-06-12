@@ -2,11 +2,12 @@ import config from "../../config.json";
 import {CreateDAppOfferModel} from "../types/CreateDAppOfferModel";
 import {DAppOffer} from "../types/DAppOffer";
 
-export async function createDappOffer(model : CreateDAppOfferModel) : Promise<DAppOffer>{
+export async function createDappOffer(model : CreateDAppOfferModel, token : string) : Promise<DAppOffer>{
     let options: RequestInit = {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization' : "Bearer "+token
         },
         body: JSON.stringify(model)
     };

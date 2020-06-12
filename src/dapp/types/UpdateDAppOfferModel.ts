@@ -14,7 +14,7 @@ export interface UpdateDAppOfferModel{
 
 export const initDAppUpdateOffer : UpdateDAppOfferModel ={
     Title: "",
-    Provider: {Id: "", Name: ""},
+    Provider: {id: "", Name: ""},
     Description: "",
     OfferLengthInMonths : 10,
     LiskPerMonth : 1,
