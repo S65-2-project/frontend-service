@@ -16,15 +16,16 @@ const Chat = (props : any) => {
     const [chatList, setChatList] = useState()
     const [chatEnabled, setChatEnabed] = useState<boolean>(false)
     const [error, setError] = React.useState<JSX.Element>(<></>);
+    const [chatId, setChatId] = React.useState<string>();
 
-    let inputRef = React.createRef();
 
     const loadChats = async () => {
         try {
             const options: RequestInit = {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    "Authorization": "Bearer " + props.auth.User.token
                 },
                 mode: 'cors',
                 cache: 'default'
@@ -92,8 +93,7 @@ const Chat = (props : any) => {
         }
     }
 
-    const onMessageSend = () => {
-        //TODO: send message to network
+    const onMessageSend = async () => {
         if (message.length === 0) {
             return;
         }
@@ -103,10 +103,34 @@ const Chat = (props : any) => {
             text: message,
             date: new Date()
         }
-        setMessageList((messageList: any) => [...messageList, newMessage]);
-        setMessage('');
-        // @ts-ignore
-        inputRef.clear();
+
+        let sendMessage = {
+            SenderId : props.auth.User.id,
+            Text : message
+        }
+
+        let options: RequestInit = {
+            method: "POST",
+            body: JSON.stringify(sendMessage),
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + props.auth.User.token
+            },
+            mode: "cors",
+            cache: "default"
+        };
+
+        try {
+            let response: Response = await fetch(config.SERVICES.COMMUNICATION_SERVICE +"/SendMessage/" + chatId, options);
+            console.log(response)
+            if (response.status === 200) {
+                setMessageList((messageList: any) => [...messageList, newMessage]);
+            } else {
+                throw new Error("Could not send message.")
+            }
+        }catch (e) {
+            await addError(e);
+        }
     }
 
     const onChatClick = async (object: any) => {
@@ -114,7 +138,8 @@ const Chat = (props : any) => {
             const options: RequestInit = {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    "Authorization": "Bearer " + props.auth.User.token
                 },
                 mode: 'cors',
                 cache: 'default'
@@ -140,7 +165,7 @@ const Chat = (props : any) => {
                 list.push(chatView)
             }
             await ReadChat(object.id, props.auth.User.id);
-
+            setChatId(object.id)
             setMessageList(list)
             setChatEnabed(true);
         } catch (e) {
@@ -152,7 +177,8 @@ const Chat = (props : any) => {
         const options: RequestInit = {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                "Authorization": "Bearer " + props.auth.User.token
             },
             mode: 'cors',
             cache: 'default'
@@ -182,7 +208,6 @@ const Chat = (props : any) => {
                 defaultValue={message}
                 onChange={onMessageChange}
                 multiline={false}
-                ref={(el: any) => (inputRef = el)}
                 onKeyPress={onEnterPress}
                 autofocus={true}
                 rightButtons={
