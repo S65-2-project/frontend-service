@@ -286,6 +286,9 @@ const DelegateListOverview = (props : any) => {
 
     // on Change method with a check if the min price is higher than the max price. If it is then show an error.
     const onMinPriceChange = (event: any) => {
+        if(event.target.value < 0){
+            event.target.value =0;
+        }
         setMinPrice(event.target.value)
 
         if (maxPrice !== undefined && maxPrice < event.target.value) {
@@ -298,6 +301,9 @@ const DelegateListOverview = (props : any) => {
 
     // on Change method with a check if the min price is higher than the max price. If it is then show an error.
     const onMaxPriceChange = (event: any) => {
+        if(event.target.value < 0){
+            event.target.value =0;
+        }
         setMaxPrice(event.target.value)
 
         if (minPrice !== undefined && minPrice > event.target.value) {
@@ -310,10 +316,15 @@ const DelegateListOverview = (props : any) => {
 
     // on Change method with a check if the min availability is higher than the max availability. If it is then show an error.
     const onMinAvailabilityChange = (event: any) => {
-        setMinMonth(event.target.value)
+        if(event.target.value < 0){
+            event.target.value =0;
+        }
+
+        setMinMonth(event.target.value);
+
 
         if (maxMonth !== undefined && maxMonth < event.target.value) {
-            setShowError(true)
+            setShowError(true);
             setErrorMessage("Please check that the minimal price or availability is less than the maximum price or availability!")
         } else {
             setShowError(false)
@@ -322,6 +333,9 @@ const DelegateListOverview = (props : any) => {
 
     // on Change method with a check if the min availability is higher than the max availability. If it is then show an error.
     const onMaxAvailabilityChange = (event: any) => {
+        if(event.target.value < 0){
+            event.target.value =0;
+        }
         setMaxMonth(event.target.value)
 
         if (minMonth !== undefined && minMonth > event.target.value) {
@@ -361,13 +375,13 @@ const DelegateListOverview = (props : any) => {
                     <div className="col-lg-4">
                         <Form.Group>
                             <Form.Label>Min price: </Form.Label>
-                            <Form.Control type="number" onChange={onMinPriceChange} value={minPrice}/>
+                            <Form.Control type="number" min="0" onChange={onMinPriceChange} value={minPrice}/>
                         </Form.Group>
                     </div>
                     <div className="col-lg-4">
                         <Form.Group>
                             <Form.Label>Max price: </Form.Label>
-                            <Form.Control type="number" onChange={onMaxPriceChange} value={maxPrice}/>
+                            <Form.Control type="number" min="0" onChange={onMaxPriceChange} value={maxPrice}/>
                         </Form.Group>
                     </div>
                     <div className="col-lg-4">
@@ -387,14 +401,14 @@ const DelegateListOverview = (props : any) => {
                     <div className="col-lg-4">
                         <Form.Group>
                             <Form.Label>Minimal availability (Months): </Form.Label>
-                            <Form.Control type="number" onChange={onMinAvailabilityChange}
+                            <Form.Control type="number" min="0" onChange={onMinAvailabilityChange}
                                           value={minMonth}/>
                         </Form.Group>
                     </div>
                     <div className="col-lg-4">
                         <Form.Group>
                             <Form.Label>Maximal availability (Months): </Form.Label>
-                            <Form.Control type="number" onChange={onMaxAvailabilityChange}
+                            <Form.Control type="number" min="0" onChange={onMaxAvailabilityChange}
                                           value={maxMonth}/>
                         </Form.Group>
                     </div>
