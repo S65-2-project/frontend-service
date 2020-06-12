@@ -17,7 +17,7 @@ const DAppUpdate = (props: any)=>{
         event.stopPropagation();
         try {
             console.log(updateModel);
-            await UpdateDAppOffer(id, updateModel);
+            await UpdateDAppOffer(id, updateModel,props.auth.User.token);
             props.history.push("/dapp-overview")
         } catch (er) {
             addError(er);
@@ -120,7 +120,7 @@ const DAppUpdate = (props: any)=>{
                 let updatemodel: UpdateDAppOfferModel = {
                     Title: result.title,
                     LiskPerMonth: result.liskPerMonth,
-                    Provider: {Id: result.provider.id, Name: result.provider.name},
+                    Provider: {id: result.provider.id, Name: result.provider.name},
                     DelegatesNeededForOffer : result.delegatesNeededForOffer,
                     OfferLengthInMonths : result.offerLengthInMonths,
                     Region: result.region,

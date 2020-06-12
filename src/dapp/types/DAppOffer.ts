@@ -1,15 +1,15 @@
 import {User} from "./CreateDAppOfferModel";
 
 export interface DAppOffer{
-    Id: string
-    Provider: User
-    Title: string
-    Description: string
-    OfferLengthInMonths: number
-    LiskPerMonth: number
-    DelegatesNeededForOffer: number
-    DelegatesCurrentlyInOffer : User[]
-    Region : string
-    DateStart : string
-    DateEnd : string
+    id: string
+    provider: User
+    title: string
+    description: string
+    offerLengthInMonths: number
+    liskPerMonth: number
+    delegatesNeededForOffer: number
+    delegatesCurrentlyInOffer : User[]
+    region : string
+    dateStart : string
+    dateEnd : string
 }
