@@ -62,6 +62,7 @@ const Chat = (props : any) => {
     useEffect(() => {
         loadChats();
 
+        // eslint-disable-next-line
     }, [props.auth.User.id]);
 
     let inputRef = React.createRef();
