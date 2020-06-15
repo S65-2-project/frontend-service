@@ -56,6 +56,7 @@ jobs:
         with:
           name: nginx-artifact
           path: ./nginx.conf
+          
   deliver:
     needs: build
     runs-on: ubuntu-18.04
