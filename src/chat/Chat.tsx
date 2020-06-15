@@ -9,6 +9,9 @@ import {connect} from "react-redux";
 import ChatModel from "./types/Chat";
 import Message from "./types/Message";
 import {Alert} from "react-bootstrap";
+import * as signalR from "@microsoft/signalr";
+import {LogLevel} from "@microsoft/signalr";
+import {clearChat, setChat} from "../actions/ChatActions";;
 
 const Chat = (props : any) => {
     const [message, setMessage] = useState<string>('');
@@ -16,8 +19,7 @@ const Chat = (props : any) => {
     const [chatList, setChatList] = useState()
     const [chatEnabled, setChatEnabed] = useState<boolean>(false)
     const [error, setError] = React.useState<JSX.Element>(<></>);
-    const [chatId, setChatId] = React.useState<string>();
-
+    const [chatId, setChatId] = React.useState<string>('');
 
     const loadChats = async () => {
         try {
@@ -69,13 +71,48 @@ const Chat = (props : any) => {
 
     }
 
+    let inputRef = React.createRef();
+
     useEffect(() => {
         loadChats();
 
         // eslint-disable-next-line
     }, [props.auth.User.id]);
 
-    //error warning
+    useEffect(() => {
+        const setupSignalR = async () => {
+            props.clearChat();
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl(config.SERVICES.CHAT_SERVICE, {
+                    accessTokenFactory: () => props.auth.User.token,
+                })
+                .configureLogging(LogLevel.Information)
+                .withAutomaticReconnect()
+                .build();
+            try {
+                await connection.start();
+                connection.on("ReceiveMessage", async (input : any) => {
+                    await loadChats();
+
+                    if (input.chatId === props.chat.ChatId){
+                        let newMessage = {
+                            position: 'left',
+                            type: 'text',
+                            text: input.message.text,
+                            date: input.message.timeStamp
+                        }
+                        setMessageList((messageList: any) => [...messageList, newMessage]);
+                    }
+                })
+            }catch (e) {
+                await addError(e);
+            }
+        }
+
+        setupSignalR();
+        // eslint-disable-next-line
+    }, [props.auth.User.token])
+
     const addError = async (er: any) => {
         setError(<Alert variant={"warning"} onClick={
             () => {
@@ -87,9 +124,9 @@ const Chat = (props : any) => {
         setMessage(event.target.value);
     }
 
-    const onEnterPress = (event: any) => {
-        if (event.key === 'Enter'){
-            onMessageSend();
+    const onEnterPress = async (event: any) => {
+        if (event.key === 'Enter') {
+            await onMessageSend();
         }
     }
 
@@ -122,18 +159,19 @@ const Chat = (props : any) => {
 
         try {
             let response: Response = await fetch(config.SERVICES.COMMUNICATION_SERVICE +"/SendMessage/" + chatId, options);
-            console.log(response)
             if (response.status === 200) {
                 setMessageList((messageList: any) => [...messageList, newMessage]);
             } else {
                 throw new Error("Could not send message.")
             }
+            // @ts-ignore
+            inputRef.clear();
         }catch (e) {
             await addError(e);
         }
     }
 
-    const onChatClick = async (object: any) => {
+    const getMessages = async (id: string) => {
         try {
             const options: RequestInit = {
                 method: 'GET',
@@ -144,7 +182,7 @@ const Chat = (props : any) => {
                 mode: 'cors',
                 cache: 'default'
             }
-            let result = await fetch(config.SERVICES.COMMUNICATION_SERVICE + '/messages/' + object.id, options);
+            let result = await fetch(config.SERVICES.COMMUNICATION_SERVICE + '/messages/' + id, options);
             if (result.status !== 200) {
                 throw new Error("Chat could not be loaded")
             }
@@ -164,13 +202,18 @@ const Chat = (props : any) => {
                 }
                 list.push(chatView)
             }
-            await ReadChat(object.id, props.auth.User.id);
-            setChatId(object.id)
+            await ReadChat(id, props.auth.User.id);
             setMessageList(list)
             setChatEnabed(true);
         } catch (e) {
             await addError(e);
         }
+    }
+
+    const onChatClick = async (object: any) => {
+        setChatId(object.id);
+        props.setChat(object.id);
+        await getMessages(object.id);
     }
 
     const ReadChat = async (id: string, userId: string) => {
@@ -189,6 +232,7 @@ const Chat = (props : any) => {
         }
         await loadChats();
     }
+
 
     return <div className={"chat-container"}>
         {error}
@@ -210,6 +254,11 @@ const Chat = (props : any) => {
                 multiline={false}
                 onKeyPress={onEnterPress}
                 autofocus={true}
+                ref={(el: any)  => {
+                    if (el !== null){
+                        inputRef = el;
+                    }
+                }}
                 rightButtons={
                     <Button
                         color='white'
@@ -222,10 +271,23 @@ const Chat = (props : any) => {
         </div>
     </div>
 };
+
 const mapStateToProps = (state : any) => {
     return {
-        auth : state.auth
+        auth : state.auth,
+        chat : state.chat,
     };
-}
+};
 
-export default withRouter(connect(mapStateToProps)(Chat));
+const mapDispatchToProps = (dispatch : any) => {
+    return {
+        setChat: (id : string) => {
+            dispatch(setChat(id));
+        },
+        clearChat: () => {
+            dispatch(clearChat());
+        }
+    };
+};
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Chat));
