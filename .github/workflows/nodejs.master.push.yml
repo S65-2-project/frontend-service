@@ -43,6 +43,13 @@ jobs:
         env:
           CI: true
 
+      # Runs SonarCloud scan    
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_ACCESS_TOKEN }}
+
       # Upload the release folder and Dockerfile artifacts to this GitHub workflow for use in the next job
       - name: Upload release artifact
         uses: actions/upload-artifact@v1
@@ -91,7 +98,6 @@ jobs:
           name: nginx-artifact
           path: .
 
-      
       # Get the tag version 
       - name: Get tag version
         id: get_tag_version
