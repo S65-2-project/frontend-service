@@ -51,27 +51,40 @@ const DelegateCreate = (props: any) =>{
             </Form.Group>
             <Form.Group controlId="Lenght of Offer">
                 <Form.Label>How many months are you able to deliver your services</Form.Label>
-                <Form.Control type="number" placeholder="please enter a number..." onChange={
+                <Form.Control type="number" min="0" placeholder="please enter a number..." onChange={
                     (event: any) => {
+                        if(parseInt(event.target.value) < 0){
+                            event.target.value =0;
+                        }
                         createModel.AvailableForInMonths = parseInt(event.target.value)
                     }
                 }/>
             </Form.Group>
             <Form.Group controlId="Lenght of Offer">
                 <Form.Label>How much do you wish to be paid a month</Form.Label>
-                <Form.Control type="number" placeholder="please enter a number..." onChange={
+                <Form.Control type="number" min="0" placeholder="please enter a number..." onChange={
                     (event: any) => {
+                        if(parseInt(event.target.value) < 0){
+                            event.target.value =0;
+                        }
                         createModel.LiskPerMonth = parseInt(event.target.value)
                     }
                 }/>
             </Form.Group>
             <Form.Group controlId="Title">
                 <Form.Label>Region</Form.Label>
-                <Form.Control type="text" placeholder="Region" onChange={
+                <Form.Control as="select" onChange={
                     (event: any) => {
                         createModel.Region = event.target.value
-                    }
-                }/>
+                    }}>
+                    <option>...</option>
+                    <option>Europe</option>
+                    <option>Asia</option>
+                    <option>Africa</option>
+                    <option>Oceania</option>
+                    <option>North-America</option>
+                    <option>South-America</option>
+                </Form.Control>
             </Form.Group>
             <Button type={"submit"} variant="primary" onClick={CreateDelegate}>
                 Create Delegate Offer
