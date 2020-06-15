@@ -271,8 +271,8 @@ const DAppListOverview = () => {
     return (
         <div style={{marginTop: '30px'}}>
             <div>
-                <h2>Delegate offers</h2>
-                <p>On this page the delegates that offer to be used by sidechains are shown. You can contact them by
+                <h2>Dapps</h2>
+                <p>On this page you can see the Dapps that seek new delegates. You can contact them by
                     clicking the contact button.</p>
             </div>
             <div>
