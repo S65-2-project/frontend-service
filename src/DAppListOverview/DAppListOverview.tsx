@@ -246,6 +246,9 @@ const DAppListOverview = () => {
 
     // on Change method with a check if the min price is higher than the max price. If it is then show an error.
     const onMinRewardChange = (event: any) => {
+        if(event.target.value < 0){
+            event.target.value =0;
+        }
         setMinReward(event.target.value)
 
         if (maxReward !== undefined && maxReward < event.target.value) {
@@ -258,6 +261,9 @@ const DAppListOverview = () => {
 
     // on Change method with a check if the min price is higher than the max price. If it is then show an error.
     const onMaxRewardChange = (event: any) => {
+        if(event.target.value < 0){
+            event.target.value =0;
+        }
         setMaxReward(event.target.value)
 
         if (minReward !== undefined && minReward > event.target.value) {
@@ -297,13 +303,13 @@ const DAppListOverview = () => {
                     <div className="col-lg-3">
                         <Form.Group>
                             <Form.Label>Min reward: </Form.Label>
-                            <Form.Control type="number" onChange={onMinRewardChange} value={minReward}/>
+                            <Form.Control type="number" min="0" onChange={onMinRewardChange} value={minReward}/>
                         </Form.Group>
                     </div>
                     <div className="col-lg-3">
                         <Form.Group>
                             <Form.Label>Max reward: </Form.Label>
-                            <Form.Control type="number" onChange={onMaxRewardChange} value={maxReward}/>
+                            <Form.Control type="number" min="0" onChange={onMaxRewardChange} value={maxReward}/>
                         </Form.Group>
                     </div>
                     <div className="col-lg-3">

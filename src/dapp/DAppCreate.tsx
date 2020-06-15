@@ -51,24 +51,33 @@ const DAppCreate = (props: any) => {
             </Form.Group>
             <Form.Group controlId="DelegatesNeededForOffer">
                 <Form.Label>Amount of Delegates needed</Form.Label>
-                <Form.Control type="number" placeholder="please enter a number..." onChange={
+                <Form.Control type="number" min="0" placeholder="please enter a number..." onChange={
                     (event: any) => {
+                        if(parseInt(event.target.value) < 0){
+                            event.target.value =0;
+                        }
                         createModel.DelegatesNeededForOffer = parseInt(event.target.value)
                     }
                 }/>
             </Form.Group>
             <Form.Group controlId="Lenght of Offer">
                 <Form.Label>How long the contract will last in months</Form.Label>
-                <Form.Control type="number" placeholder="please enter a number..." onChange={
+                <Form.Control type="number" min="0" placeholder="please enter a number..." onChange={
                     (event: any) => {
+                        if(parseInt(event.target.value) < 0){
+                            event.target.value =0;
+                        }
                         createModel.OfferLengthInMonths = parseInt(event.target.value)
                     }
                 }/>
             </Form.Group>
             <Form.Group controlId="Lisk per month">
                 <Form.Label>Lisk per month</Form.Label>
-                <Form.Control type="number" placeholder="please enter a number..." onChange={
+                <Form.Control type="number" min="0" placeholder="please enter a number..." onChange={
                     (event: any) => {
+                        if(parseInt(event.target.value) < 0){
+                            event.target.value =0;
+                        }
                         createModel.LiskPerMonth = parseInt(event.target.value)
                     }
                 }/>
