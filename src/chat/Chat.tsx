@@ -110,6 +110,7 @@ const Chat = (props : any) => {
         }
 
         setupSignalR();
+        // eslint-disable-next-line
     }, [props.auth.User.token])
 
     const addError = async (er: any) => {
