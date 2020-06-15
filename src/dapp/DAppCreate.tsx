@@ -84,11 +84,18 @@ const DAppCreate = (props: any) => {
             </Form.Group>
             <Form.Group controlId="Region">
                 <Form.Label>Region</Form.Label>
-                <Form.Control type="text" placeholder="Region" onChange={
+                <Form.Control as="select" onChange={
                     (event: any) => {
                         createModel.Region = event.target.value
-                    }
-                }/>
+                    }}>
+                    <option>...</option>
+                    <option>Europe</option>
+                    <option>Asia</option>
+                    <option>Africa</option>
+                    <option>Oceania</option>
+                    <option>North-America</option>
+                    <option>South-America</option>
+                </Form.Control>
             </Form.Group>
             <Form.Group controlId="DateStart">
                 <Form.Label>Date start</Form.Label>
