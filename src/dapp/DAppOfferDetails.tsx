@@ -73,6 +73,7 @@ export const DAppOfferDetails = (props: any) => {
         }
     };
 
+    // @ts-ignore
     const CanDelete = (provider: any) => {
         return props.auth.User.id === provider.id;
     }
