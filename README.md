@@ -42,7 +42,7 @@ To reproduce the Pipeline the following secrets are needed:
 - SONARCLOUD_ACCESS_TOKEN : The access token for sonarcloud
 
 ## Delivery
-All the images are stored on DockerHub. These are also on a public repo and can be found [here](https://hub.docker.com/repository/docker/s652/account-service).
+All the images are stored on DockerHub. These are also on a public repo and can be found [here](https://hub.docker.com/repository/docker/s652/frontend-service).
 All images with a SHA tag are development builds and versions with a version tag are production builds. 
 
 ## Deployment
