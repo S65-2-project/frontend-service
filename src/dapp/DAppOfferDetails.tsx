@@ -165,7 +165,7 @@ export const DAppOfferDetails = (props: any) => {
                             <Form.Label>Offer made
                                 by: <Link
                                     // @ts-ignore
-                                    to={{pathname: "/profile/" + details.provider.id}}>{details.provider.Email}</Link>.</Form.Label>
+                                    to={{pathname: "/profile/" + details.provider.id}}>{details.provider.email}</Link>.</Form.Label>
                         </Form.Group>
                         </h3>
                         <Form.Group>
