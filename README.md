@@ -1,44 +1,55 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# AccountService
+This is the frontend-service of the Lisk delegate market project. It was made as a groupproject for Fontys. 
 
-## Available Scripts
+It was made with react ts and will function as the webclient for the Lisk Delegate Market. To get more insight about the product click [here](https://github.com/S65-2-project). If you want to see the live product it can be found [here](https://delegate-market.nl).
 
-In the project directory, you can run:
+The frontend-service enables the user to use the application in a smooth browser ui.
 
-### `npm start`
+## External sources
+To run this project you will need to run the following services:
+- [account-service](https://github.com/S65-2-project/AccountService)
+- [marketplace-service](https://github.com/S65-2-project/MarketplaceService)
+- [email-service](https://github.com/S65-2-project/EmailMicroservice)
+- [communication-service](https://github.com/S65-2-project/CommunicationService)
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Configuration
+This is an example for the config.json file that is needed to configure the application. 
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+```json
+{
+  "SERVICES":{
+    "ACCOUNT_SERVICE_URL": "",
+    "DAPP": "",
+    "DELEGATE" : "",
+    "COMMUNICATION_SERVICE" : "",
+    "CHAT_SERVICE": ""
+  }
+}
+```
 
-### `npm test`
+## Github Actions
+The project runs on GitHub Actions with 3 different configuration.
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. All feature/* branches will be tested and build.
+2. In addition to the steps of step 1 develop branch pushes will also be deliver to dockerhub and deploy to our develop environment.
+3. All pushes on a tag will be deliverd and deployed to our kubernetes environment.   
 
-### `npm run build`
+To reproduce the Pipeline the following secrets are needed:
+- DOCKER_ACCESS_TOKEN : The access token or password of the docker registry
+- DOCKER_USER : The username of the docker registry
+- GPG_PASSPHRASE : The secret passphrase that is used to encrypt and decrypt the GPG files
+- KUBE_CONFIG : The kubeconfig file to access the kubernetes cluster
+- SONARCLOUD_ACCESS_TOKEN : The access token for sonarcloud
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Delivery
+All the images are stored on DockerHub. These are also on a public repo and can be found [here](https://hub.docker.com/repository/docker/s652/account-service).
+All images with a SHA tag are development builds and versions with a version tag are production builds. 
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+## Deployment
+The project is deployed to a kubernetes cluster. in de ./kube_develop folder are all the different kubernetes configuration files for the development builds.  In the ./kube folder are the configuration files for the production builds. 
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- autoscaler.yaml -> this is the autoscaler for the deployment
+- cluster-issuer.yaml-> to ensure there is a cluster issuer for the TLS certificates
+- deployment.yaml -> the deployment of the service itself
+- ingress.yaml -> the ingress that is used to access the deployment from outside, it is enabled with a TLS certificate
+- service.yaml -> the service that exposes the deployment for other services and resources within the cluster
