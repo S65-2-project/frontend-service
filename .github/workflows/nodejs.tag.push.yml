@@ -8,7 +8,7 @@ on:
 env:
   DOCKER_ORGANIZATION: s652
   DOCKER_REPOSITORY: frontend-service
-  KUBERNETES_NAMESPACE: s65-2
+  KUBERNETES_NAMESPACE: s652
   WEBSITE_URL: https://delegate-market.nl
 
 jobs:

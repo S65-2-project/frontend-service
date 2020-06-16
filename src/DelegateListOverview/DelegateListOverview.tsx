@@ -128,11 +128,20 @@ const DelegateListOverview = (props : any) => {
                             for <b> {item.availableForInMonths}</b> months</ListGroup.Item>
                         <ListGroup.Item variant="primary">Price: <b>{item.liskPerMonth}</b> Lisk per month  </ListGroup.Item>
                     </ListGroup>
-                    {props.auth.User.token !== '' &&
+                    {(props.auth.User.token !== '' && props.auth.User.id !== item.provider.id) &&
                     <Card.Footer style={{height: '100px'}}>
-                        <Button variant="primary" onClick={() => {initializeChat(item.provider)}}>Start de chat!</Button>
-                    </Card.Footer>}
-
+                        <Button variant="primary" onClick={() => {
+                            initializeChat(item.provider)
+                        }}>Start de chat!</Button>
+                    </Card.Footer>
+                    }
+                    {(props.auth.User.token !== '' && props.auth.User.id === item.provider.id) &&
+                    <Card.Footer style={{height: '100px'}}>
+                        <Button variant="primary" onClick={() => {
+                            props.history.push("/update-delegate/" + item.id)
+                        }}>Update offer</Button>
+                    </Card.Footer>
+                    }
                 </Card>
             </div>
         })
@@ -166,8 +175,8 @@ const DelegateListOverview = (props : any) => {
         if (response.status === 200) {
             props.history.push('/chat')
         } else {
-            let text = await response.text();
-            Error(text)
+            setShowError(true)
+            setErrorMessage(JSON.stringify(await response.json()))
         }
     }
 
