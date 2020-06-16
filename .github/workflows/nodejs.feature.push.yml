@@ -26,10 +26,12 @@ jobs:
         run: npm ci
       
       # Build the project
-      - run: npm run build --if-present
+      - name: Build
+        run: npm run build --if-present
 
       # Test the project
-      - run: npm test
+      - name: Test
+        run: npm test
         env:
           CI: true
 

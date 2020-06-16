@@ -7,6 +7,8 @@ on:
 env:
   DOCKER_ORGANIZATION: s652
   DOCKER_REPOSITORY: frontend-service
+  KUBERNETES_NAMESPACE: s652-develop
+  WEBSITE_URL: https://develop.delegate-market.nl
 
 jobs:
   build:
@@ -23,7 +25,7 @@ jobs:
 
       # Decrypt the GPG encrypted config files
       - name: Decrypt the GPG encrypted config files
-        run: gpg --quiet --batch --yes --passphrase ${{ secrets.GPG_PASSPHRASE }} --output ./src/config.json --decrypt ./src/config.json.gpg
+        run: gpg --quiet --batch --yes --passphrase ${{ secrets.GPG_PASSPHRASE }} --output ./src/config.json --decrypt ./src/config.develop.json.gpg
 
       # Install the dependencies needed for the project
       - name: Install dependencies
@@ -39,7 +41,7 @@ jobs:
         env:
           CI: true
 
-      # Upload the release folder and Dockerfile artifacts to this GitHub workflow for use in the next job
+      # Upload the artifacts to this GitHub workflow for use in the next job
       - name: Upload release artifact
         uses: actions/upload-artifact@v1
         with:
@@ -51,12 +53,19 @@ jobs:
         with:
           name: dockerfile-artifact
           path: ./Dockerfile
-      - name: Upload nginx config artifact
+      
+      - name: Upload NGINX config artifact
         uses: actions/upload-artifact@v1
         with:
           name: nginx-artifact
           path: ./nginx.conf
-          
+
+      - name: Upload Kubernetes artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: kubernetes-artifact
+          path: ./kube_develop
+
   deliver:
     needs: build
     runs-on: ubuntu-18.04
@@ -73,6 +82,7 @@ jobs:
         with:
           name: dockerfile-artifact
           path: .
+      
       - name: Download nginx config artifact
         uses: actions/download-artifact@v1
         with:
@@ -85,3 +95,53 @@ jobs:
           docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_ACCESS_TOKEN }}
           docker build -t ${{ env.DOCKER_ORGANIZATION }}/${{ env.DOCKER_REPOSITORY }}:${{ github.sha }} .
           docker push ${{ env.DOCKER_ORGANIZATION }}/${{ env.DOCKER_REPOSITORY }}:${{ github.sha }}
+  deploy:
+    needs: deliver
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Download Kubernetes artifact
+        uses: actions/download-artifact@v1
+        with:
+            name: kubernetes-artifact
+            path: ./kube_develop
+      
+      - name: Setup Kubectl
+        uses: azure/setup-kubectl@v1
+
+      - name: Set context via kubeconfig
+        uses: azure/k8s-set-context@v1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+      
+      - name: Deploy Kubernetes with manifests
+        uses: azure/k8s-deploy@v1
+        with:
+            namespace: ${{ env.KUBERNETES_NAMESPACE }}
+            manifests: |
+              ./kube_develop/autoscaler.yaml
+              ./kube_develop/cluster-issuer.yaml
+              ./kube_develop/deployment.yaml
+              ./kube_develop/ingress.yaml
+              ./kube_develop/service.yaml
+            images:  |
+              ${{ env.DOCKER_ORGANIZATION }}/${{ env.DOCKER_REPOSITORY }}:${{ github.sha }}
+  
+  lighthouse-check:
+    needs: deploy
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Create /tmp/lighthouse-report directory
+        run: mkdir /tmp/lighthouse-report
+      
+      - name: Run Lighthouse check
+        uses: foo-software/lighthouse-check-action@master
+        with:
+          outputDirectory: /tmp/lighthouse-report
+          urls: ${{ env.WEBSITE_URL }}
+
+      - name: Upload Lighthouse report artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: lighthouse-report-artifact
+          path: /tmp/lighthouse-report
