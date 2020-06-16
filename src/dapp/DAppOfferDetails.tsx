@@ -73,7 +73,7 @@ export const DAppOfferDetails = (props: any) => {
         }
     };
 
-    // @ts-ignore
+    // eslint-disable-next-line
     const CanDelete = (provider: any) => {
         return props.auth.User.id === provider.id;
     }
