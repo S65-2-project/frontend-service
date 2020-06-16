@@ -157,3 +157,17 @@ jobs:
         with:
           name: lighthouse-report-artifact
           path: /tmp/lighthouse-report
+
+  k6_cloud_test:
+    name: k6 cloud test run
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+  
+      - name: Run k6 cloud test
+        uses: k6io/action@v0.1
+        with:
+          filename: ./K6Scripts/cloudtest.js
+          cloud: true
+          token: ${{ secrets.K6_API_TOKEN }}
