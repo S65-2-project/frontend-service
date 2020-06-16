@@ -82,39 +82,43 @@ export const DAppOfferDetails = (props: any) => {
 
     // Startchat button, starts a chat and redirects user to the chat window
     const initializeChat = async (provider: any) => {
-        const {auth} = props;
+        try {
+            const {auth} = props;
 
-        let chatInvoker: DAppOfferUser = {
-            id: auth.User.id,
-            name: auth.User.email
-        };
+            let chatInvoker: DAppOfferUser = {
+                id: auth.User.id,
+                name: auth.User.email
+            };
 
-        let chatReceiver: DAppOfferUser = {
-            id: provider.id,
-            name: provider.name
-        }
+            let chatReceiver: DAppOfferUser = {
+                id: provider.id,
+                name: provider.name
+            }
 
-        let createChat: CreateChat = {
-            buyer: chatInvoker,
-            seller: chatReceiver
-        }
+            let createChat: CreateChat = {
+                buyer: chatInvoker,
+                seller: chatReceiver
+            }
 
-        let options: RequestInit = {
-            method: "POST",
-            body: JSON.stringify(createChat),
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + props.auth.User.token
-            },
-            mode: "cors",
-            cache: "default"
-        };
-        let response: Response = await fetch(config.SERVICES.COMMUNICATION_SERVICE, options);
-        if (response.status === 200) {
-            props.history.push('/chat')
-        } else {
-            let text = await response.text();
-            Error(text)
+            let options: RequestInit = {
+                method: "POST",
+                body: JSON.stringify(createChat),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + props.auth.User.token
+                },
+                mode: "cors",
+                cache: "default"
+            };
+            let response: Response = await fetch(config.SERVICES.COMMUNICATION_SERVICE, options);
+            if (response.status === 200) {
+                props.history.push('/chat')
+            } else {
+                let text = await response.text();
+                Error(text)
+            }
+        } catch (e) {
+            setError(<p>e.Message</p>)
         }
     }
 
