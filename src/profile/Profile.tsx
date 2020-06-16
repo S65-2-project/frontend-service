@@ -19,14 +19,13 @@ const Dialogue = (props: any) => {
 
             <Modal.Header
                 closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">Weet je zeker dat je je account wil
-                    verwijderen?</Modal.Title> </Modal.Header>
+                <Modal.Title id="contained-modal-title-vcenter">Are you shure you want to remove your account?</Modal.Title> </Modal.Header>
             <Modal.Body>
                 <Button variant="secondary" onClick={props.handleClose}>
-                    Nee
+                    No
                 </Button>
                 <Button variant="primary" onClick={props.deleteAccount}>
-                    Ja
+                    Yes
                 </Button>
             </Modal.Body>
         </Modal>);
@@ -300,10 +299,11 @@ const Profile = (props: any) => {
             setEditButton(<Button onClick={() => {
                 initialize(true);
             }}>Edit</Button>);
+            setDeleteAccountButton(<></>)
         } else if (edit && loggedIn) {//If logged in and in edit mode
             setEditButton(<Button onClick={saveChangesEdit}>Save changes</Button>)
 
-            setDeleteAccountButton(<Button variant={"danger"} onClick={handleShow}>Delete Account</Button>)//setDeleteProfileButtonBlock()
+            setDeleteAccountButton(<Button variant={"danger"} onClick={handleShow}>Delete Account</Button>)
         } else {
             setEditButton(<div/>)
         }
