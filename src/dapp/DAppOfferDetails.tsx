@@ -178,7 +178,7 @@ export const DAppOfferDetails = (props: any) => {
             loadHtml(id)
         }
 
-
+        // eslint-disable-next-line
     }, [id, props.history]);
 
     return (
