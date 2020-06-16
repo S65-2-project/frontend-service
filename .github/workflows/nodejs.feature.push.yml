@@ -1,0 +1,43 @@
+name: Node.js push on feature branch
+
+on:
+  push:
+    branches: [feature/*]
+
+jobs:
+  build:
+    # The virtual machine that will be used on GitHub
+    runs-on: ubuntu-18.04
+    
+    # Run the steps in a Docker container on the virtual machine
+    container:
+      image: node:12.16.2
+    
+    steps:
+      # Checkout Git repository
+      - uses: actions/checkout@v2
+
+      # Decrypt the GPG encrypted config files
+      - name: Decrypt the GPG encrypted config files
+        run: gpg --quiet --batch --yes --passphrase ${{ secrets.GPG_PASSPHRASE }} --output ./src/config.json --decrypt ./src/config.json.gpg
+      
+      # Install the dependencies needed for the project
+      - name: Install dependencies
+        run: npm ci
+      
+      # Build the project
+      - name: Build
+        run: npm run build --if-present
+
+      # Test the project
+      - name: Test
+        run: npm test
+        env:
+          CI: true
+
+      # Runs SonarCloud scan    
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_ACCESS_TOKEN }}

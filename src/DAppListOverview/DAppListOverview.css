@@ -1,0 +1,15 @@
+.card-styling {
+    box-shadow: 0 2px 10px rgba(0,0,0,.075);
+}
+
+.card-hover:hover {
+    transform: scale(1.02) !important;
+}
+
+.card-hover {
+    -webkit-transition: transform 0.4s !important;
+    -moz-transition: transform 0.4s !important;
+    -ms-transition: transform 0.4s !important;
+    -o-transition: transform 0.4s !important;
+    transition: transform 0.4s !important;
+}
