@@ -87,12 +87,12 @@ export const DAppOfferDetails = (props: any) => {
 
             let chatInvoker: DAppOfferUser = {
                 id: auth.User.id,
-                name: auth.User.email
+                email: auth.User.email
             };
 
             let chatReceiver: DAppOfferUser = {
                 id: provider.id,
-                name: provider.name
+                email: provider.email
             }
 
             let createChat: CreateChat = {
