@@ -75,12 +75,12 @@ export const DAppOfferDetails = (props: any) => {
     };
 
 
-// eslint-disable-next-line
-    const CanDelete = (provider: any) => {
+    // eslint-disable-next-line
+    const IsLoggedInUser = (provider: any) => {
         return props.auth.User.id === provider.id;
     }
 
-// Startchat button, starts a chat and redirects user to the chat window
+    // Startchat button, starts a chat and redirects user to the chat window
     const initializeChat = async (provider: any) => {
         const {auth} = props;
 
@@ -190,24 +190,23 @@ export const DAppOfferDetails = (props: any) => {
                                 : <Form.Group>
                                     <Form.Label>Delegates currently in offer: none</Form.Label>
                                 </Form.Group>
-
                         }
-
                         <Form.Group>
                             <Form.Label>Date start: <strong>{details.dateStart}</strong></Form.Label>
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>Date end : <strong>{details.dateEnd}</strong> </Form.Label>
                         </Form.Group>
-                        <Button variant="primary" style={{marginRight: '20px'}}
-                                onClick={() => initializeChat(details.provider)}>Start de
-                            chat!</Button>
                         {
-                            CanDelete(details.provider)
+                            IsLoggedInUser(details.provider)
                                 ? <>
                                     <Button onClick={handleShow}>Delete Offer</Button>
                                 </>
-                                : <></>
+                                : <>
+                                    <Button variant="primary"
+                                            onClick={() => initializeChat(details.provider)}>Start de
+                                        chat!</Button>
+                                </>
                         }
                     </Form>
                 )
