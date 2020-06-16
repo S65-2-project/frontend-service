@@ -11,6 +11,6 @@ export const options = {
 };
 
 export default function () {
-  const res = http.get('http://34.120.162.205');
+  const res = http.get('develop.delegate-market.nl');
   sleep(1);
 }
