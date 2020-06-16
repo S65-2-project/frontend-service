@@ -6,6 +6,8 @@ import {Alert, Button, Form, ListGroup, Modal} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import {connect} from "react-redux";
 import {User} from "./types/CreateDAppOfferModel";
+import {DAppOfferUser} from "../DAppListOverview/types/DAppOffer";
+import CreateChat from "../types/CreateChat";
 
 export const DAppOfferDetails = (props: any) => {
 
@@ -17,7 +19,6 @@ export const DAppOfferDetails = (props: any) => {
 
     const handleClose = () => setShowModal(false);
     const handleShow = () => setShowModal(true);
-
 
     const Dialogue = (props: any) => {
         return (
@@ -73,9 +74,48 @@ export const DAppOfferDetails = (props: any) => {
         }
     };
 
-    // eslint-disable-next-line
+
+// eslint-disable-next-line
     const CanDelete = (provider: any) => {
         return props.auth.User.id === provider.id;
+    }
+
+// Startchat button, starts a chat and redirects user to the chat window
+    const initializeChat = async (provider: any) => {
+        const {auth} = props;
+
+        let chatInvoker: DAppOfferUser = {
+            id: auth.User.id,
+            name: auth.User.email
+        };
+
+        let chatReceiver: DAppOfferUser = {
+            id: provider.id,
+            name: provider.name
+        }
+
+        let createChat: CreateChat = {
+            buyer: chatInvoker,
+            seller: chatReceiver
+        }
+
+        let options: RequestInit = {
+            method: "POST",
+            body: JSON.stringify(createChat),
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + props.auth.User.token
+            },
+            mode: "cors",
+            cache: "default"
+        };
+        let response: Response = await fetch(config.SERVICES.COMMUNICATION_SERVICE, options);
+        if (response.status === 200) {
+            props.history.push('/chat')
+        } else {
+            let text = await response.text();
+            Error(text)
+        }
     }
 
 
@@ -97,7 +137,6 @@ export const DAppOfferDetails = (props: any) => {
             } else {
                 throw new Error(body);
             }
-
         };
 
         const loadHtml = async (id: string) => {
@@ -137,7 +176,8 @@ export const DAppOfferDetails = (props: any) => {
                                 month.</Form.Label>
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>Delegates need in this offer: <strong>{details.delegatesNeededForOffer}</strong>.</Form.Label>
+                            <Form.Label>Delegates need in this
+                                offer: <strong>{details.delegatesNeededForOffer}</strong>.</Form.Label>
                         </Form.Group>
                         {
                             details.delegatesCurrentlyInOffer.length !== 0
@@ -150,6 +190,7 @@ export const DAppOfferDetails = (props: any) => {
                                 : <Form.Group>
                                     <Form.Label>Delegates currently in offer: none</Form.Label>
                                 </Form.Group>
+
                         }
 
                         <Form.Group>
@@ -158,6 +199,9 @@ export const DAppOfferDetails = (props: any) => {
                         <Form.Group>
                             <Form.Label>Date end : <strong>{details.dateEnd}</strong> </Form.Label>
                         </Form.Group>
+                        <Button variant="primary" style={{marginRight: '20px'}}
+                                onClick={() => initializeChat(details.provider)}>Start de
+                            chat!</Button>
                         {
                             CanDelete(details.provider)
                                 ? <>
@@ -175,6 +219,7 @@ export const DAppOfferDetails = (props: any) => {
             loadHtml(id)
         }
 
+        // eslint-disable-next-line
     }, [id, props.history]);
 
     return (
