@@ -136,7 +136,7 @@ const DAppUpdate = (props: any)=>{
                 let updatemodel: UpdateDAppOfferModel = {
                     Title: result.title,
                     LiskPerMonth: result.liskPerMonth,
-                    Provider: {id: result.provider.id, Name: result.provider.name},
+                    Provider: {id: result.provider.id, Email: result.provider.name},
                     DelegatesNeededForOffer : result.delegatesNeededForOffer,
                     OfferLengthInMonths : result.offerLengthInMonths,
                     Region: result.region,

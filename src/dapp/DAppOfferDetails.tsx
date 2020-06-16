@@ -117,7 +117,7 @@ export const DAppOfferDetails = (props: any) => {
                         (delegate: User) =>
                             <ListGroup.Item>
                                 <Link to={"/profile/" + delegate.id}>
-                                    {delegate.Name}
+                                    {delegate.Email}
                                 </Link>
                             </ListGroup.Item>
                     );
@@ -128,7 +128,7 @@ export const DAppOfferDetails = (props: any) => {
                         <h3><Form.Group>
                             <Form.Label>Offer made
                                 by: <Link
-                                    to={"/profile/" + details.provider.id}><strong>{details.provider.Name}</strong></Link>.</Form.Label>
+                                    to={"/profile/" + details.provider.id}><strong>{details.provider.Email}</strong></Link>.</Form.Label>
                         </Form.Group>
                         </h3>
                         <Form.Group>

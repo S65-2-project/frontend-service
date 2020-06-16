@@ -1,6 +1,6 @@
 export interface User{
     Id: string,
-    Name: string
+    Email: string
 }
 export interface CreateDelegateOfferModel{
     Provider: User,
@@ -12,7 +12,7 @@ export interface CreateDelegateOfferModel{
 }
 
 export const initDelegateCreateOffer : CreateDelegateOfferModel = {
-    Provider : {Id: "", Name:""},
+    Provider : {Id: "", Email:""},
     Title: "",
     Description: "",
     LiskPerMonth: 1,
