@@ -1,4 +1,4 @@
-# AccountService
+# FrontendService
 This is the frontend-service of the Lisk delegate market project. It was made as a groupproject for Fontys. 
 
 It was made with react ts and will function as the webclient for the Lisk Delegate Market. To get more insight about the product click [here](https://github.com/S65-2-project). If you want to see the live product it can be found [here](https://delegate-market.nl).
