@@ -2,8 +2,7 @@ name: Node.js push on tag
 
 on:
   pull_request:
-    tags:
-      - '**'
+    branches: [develop]
 
 env:
   DOCKER_ORGANIZATION: s652
