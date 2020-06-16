@@ -175,8 +175,8 @@ const DelegateListOverview = (props : any) => {
         if (response.status === 200) {
             props.history.push('/chat')
         } else {
-            let text = await response.text();
-            Error(text)
+            setShowError(true)
+            setErrorMessage(JSON.stringify(await response.json()))
         }
     }
 
