@@ -3,8 +3,8 @@ import http from 'k6/http';
 import { sleep } from 'k6';
 
 export const options = {
-  duration: '20s',
-  vus: 200,
+  duration: '1m',
+  vus: 50,
   distribution: {
     scenarioLabel1: { loadZone: 'amazon:us:portland', percent: 25 },
     scenarioLabel2: { loadZone: 'amazon:gb:london', percent: 25 },
