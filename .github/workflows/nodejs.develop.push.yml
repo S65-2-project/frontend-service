@@ -95,6 +95,7 @@ jobs:
           docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_ACCESS_TOKEN }}
           docker build -t ${{ env.DOCKER_ORGANIZATION }}/${{ env.DOCKER_REPOSITORY }}:${{ github.sha }} .
           docker push ${{ env.DOCKER_ORGANIZATION }}/${{ env.DOCKER_REPOSITORY }}:${{ github.sha }}
+
   deploy:
     needs: deliver
     runs-on: ubuntu-18.04
