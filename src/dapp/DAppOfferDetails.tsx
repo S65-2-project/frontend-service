@@ -110,6 +110,7 @@ export const DAppOfferDetails = (props: any) => {
                 mode: "cors",
                 cache: "default"
             };
+
             let response: Response = await fetch(config.SERVICES.COMMUNICATION_SERVICE, options);
             if (response.status === 200) {
                 props.history.push('/chat')

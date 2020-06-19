@@ -82,7 +82,7 @@ const DelegateUpdate = (props: any) => {
                         </Form.Control>
                     </Form.Group>
                     <Button type={"submit"} variant="primary" onClick={UpdateDelegate}>
-                        Create Delegate Offer
+                        Update Offer
                     </Button>
                 </Form>
             );
