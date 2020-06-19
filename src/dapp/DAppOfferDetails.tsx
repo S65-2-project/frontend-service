@@ -87,12 +87,12 @@ export const DAppOfferDetails = (props: any) => {
 
             let chatInvoker: DAppOfferUser = {
                 id: auth.User.id,
-                name: auth.User.email
+                email: auth.User.email
             };
 
             let chatReceiver: DAppOfferUser = {
                 id: provider.id,
-                name: provider.name
+                email: provider.email
             }
 
             let createChat: CreateChat = {
@@ -153,7 +153,7 @@ export const DAppOfferDetails = (props: any) => {
                         (delegate: User) =>
                             <ListGroup.Item>
                                 <Link to={"/profile/" + delegate.id}>
-                                    {delegate.Name}
+                                    {delegate.Email}
                                 </Link>
                             </ListGroup.Item>
                     );
@@ -165,7 +165,7 @@ export const DAppOfferDetails = (props: any) => {
                             <Form.Label>Offer made
                                 by: <Link
                                     // @ts-ignore
-                                    to={{pathname: "/profile/" + details.provider.id}}>{details.provider.name}</Link>.</Form.Label>
+                                    to={{pathname: "/profile/" + details.provider.id}}>{details.provider.email}</Link>.</Form.Label>
                         </Form.Group>
                         </h3>
                         <Form.Group>

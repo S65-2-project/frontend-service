@@ -10,7 +10,7 @@ export interface UpdateDelegateOfferModel {
 }
 
 export const initDelegateUpdateOffer : UpdateDelegateOfferModel = {
-    Provider : {Id: "", Name:""},
+    Provider : {Id: "", Email:""},
     Title: "",
     Description: "",
     LiskPerMonth: 1,

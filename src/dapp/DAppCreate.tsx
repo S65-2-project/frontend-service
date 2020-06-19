@@ -29,7 +29,7 @@ const DAppCreate = (props: any) => {
         }}>{er.message}</Alert>);
     };
     //eslint
-    useEffect(() => {createModel.Provider = {id : props.auth.User.id, Name :props.auth.User.email}});//onmount fill in provider
+    useEffect(() => {createModel.Provider = {id : props.auth.User.id, Email :props.auth.User.email}});//onmount fill in provider
 
     const createHtmlBlock =
         <Form className={"form-container"} onSubmit={CreateDApp}>

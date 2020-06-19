@@ -46,8 +46,8 @@ const Chat = (props : any) => {
 
                 let chatView = {
                     id: model.id,
-                    alt: chatUser.name,
-                    title: chatUser.name,
+                    alt: chatUser.email,
+                    title: chatUser.email,
                     subtitle: 'No messages yet',
                     date: new Date('1900-01-01'),
                     unread: model.unread

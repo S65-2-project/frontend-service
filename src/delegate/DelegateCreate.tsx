@@ -9,7 +9,7 @@ const DelegateCreate = (props: any) =>{
     //createmodel var initiates with standard values
     const createModel : CreateDelegateOfferModel = initDelegateCreateOffer;
     useEffect(() => {
-        createModel.Provider = {Id : props.auth.User.id, Name :props.auth.User.email}});//onmount fill in provider
+        createModel.Provider = {Id : props.auth.User.id, Email :props.auth.User.email}});//onmount fill in provider
     const CreateDelegate = async (event: any)=>{
         event.preventDefault();
         event.stopPropagation();
