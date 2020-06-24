@@ -16,7 +16,7 @@ const DelegateUpdate = (props: any) => {
         event.stopPropagation();
         try {
             await UpdateDelegateOffer(id, updateModel, props.auth.User.token);
-            props.history.push("/dapp-overview")
+            props.history.push("/delegate-overview")
         } catch (er) {
             addError(er);
         }
