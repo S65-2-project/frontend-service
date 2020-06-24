@@ -1,6 +1,6 @@
 export interface DAppOfferUser {
     id: string;
-    name: string;
+    email: string;
 }
 
 export interface PaginationHeader {

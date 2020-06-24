@@ -45,9 +45,9 @@ const TopNavigation = (props: any) => {
                 <Navbar.Brand href="/">Lisk Marketplace</Navbar.Brand>
                 <Nav.Link href={"/delegate-overview"}>Delegates</Nav.Link>
                 <Nav.Link href={"/dapp-overview"}>DApps</Nav.Link>
-                <Nav.Link href={"/create-dapp"}>Create DApp</Nav.Link>
-                <Nav.Link href={"/create-delegate"}>Become Delegate</Nav.Link>
-                <Nav.Link href={"/chat"} >Chat</Nav.Link>
+                {props.auth.isAuthenticated && <Nav.Link href={"/create-delegate"}>Become Delegate</Nav.Link>}
+                {props.auth.isAuthenticated && <Nav.Link href={"/create-dapp"}>Create DApp</Nav.Link>}
+                {props.auth.isAuthenticated && <Nav.Link href={"/chat"} >Chat</Nav.Link>}
                 <Navbar.Collapse className="justify-content-end">
                     <Nav className="">
                         {profileNavigationBlock}

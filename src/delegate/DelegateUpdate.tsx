@@ -94,7 +94,7 @@ const DelegateUpdate = (props: any) => {
                 let updatemodel: UpdateDelegateOfferModel = {
                     Title: result.title,
                     LiskPerMonth: result.liskPerMonth,
-                    Provider: {Id: result.provider.id, Name: result.provider.name},
+                    Provider: {Id: result.provider.id, Email: result.provider.email},
                     AvailableForInMonths: result.availableForInMonths,
                     Region: result.region,
                     Description: result.description

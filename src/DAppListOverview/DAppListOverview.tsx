@@ -107,7 +107,7 @@ const DAppListOverview = () => {
                     <Card.Body>
                         <Card.Title>{item.title}</Card.Title>
                         <Card.Subtitle className="mb-2 text-muted">Made by <i><Link
-                            to={{pathname: "/profile/" + item.provider.id}}>{item.provider.name}</Link></i></Card.Subtitle>
+                            to={{pathname: "/profile/" + item.provider.id}}>{item.provider.email}</Link></i></Card.Subtitle>
                     </Card.Body>
                     <ListGroup variant="flush">
                         <ListGroup.Item variant="secondary">Region:

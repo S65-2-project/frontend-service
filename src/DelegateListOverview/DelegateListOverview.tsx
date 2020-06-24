@@ -116,7 +116,7 @@ const DelegateListOverview = (props : any) => {
                     <Card.Body>
                         <Card.Title>{item.title}</Card.Title>
                         <Card.Subtitle className="mb-2 text-muted">Made by <i><Link
-                            to={{pathname: "/profile/" + item.provider.id}}>{item.provider.name}</Link></i></Card.Subtitle>
+                            to={{pathname: "/profile/" + item.provider.id}}>{item.provider.email}</Link></i></Card.Subtitle>
                         <Card.Text>
                             {item.description}
                         </Card.Text>
@@ -153,7 +153,7 @@ const DelegateListOverview = (props : any) => {
     const initializeChat = async (seller: DelegateOfferUser) => {
         let buyer : DelegateOfferUser = {
             id : props.auth.User.id,
-            name : props.auth.User.email
+            email : props.auth.User.email
         }
 
         let createChat: CreateChat = {

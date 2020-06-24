@@ -1,6 +1,6 @@
 export interface User {
     id: string,
-    Name: string
+    Email: string
 }
 
 export interface CreateDAppOfferModel {
@@ -17,7 +17,7 @@ export interface CreateDAppOfferModel {
 
 export const initDAppCreateOffer : CreateDAppOfferModel ={
     Title: "",
-    Provider: {id: "", Name: ""},
+    Provider: {id: "", Email: ""},
     Description: "",
     OfferLengthInMonths : 10,
     LiskPerMonth : 1,
