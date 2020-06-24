@@ -12,7 +12,7 @@ const store = createStore(combineReducers({
         chat,
     }),
     loadFromLocalStorage(),
-    applyMiddleware(createLogger(), thunk)
+    applyMiddleware(thunk)
 );
 
 function saveToLocalStorage(state : any) {
