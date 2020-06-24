@@ -1,5 +1,4 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 import auth from './reducers/AuthReducer';
 import chat from './reducers/ChatReducer';
